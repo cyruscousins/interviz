@@ -1,6 +1,12 @@
 package core;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JFileChooser;
+
+import org.farng.mp3.MP3File;
+import org.farng.mp3.TagException;
 
 public class Main {
 	public static void main(String[] args){
@@ -11,13 +17,21 @@ public class Main {
 
 		frame.init();
 		
-		//Create a file chooser
-		
 		final JFileChooser fc = new JFileChooser();
-		
-		//In response to a button click:
-		
 		int returnVal = fc.showOpenDialog(frame);
+		File song = fc.getSelectedFile();
+		
+		try {
+			MP3File mp3song = new MP3File(song);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		
 		for(int i = 0; i < 100000; i++){
 			vis.update();
