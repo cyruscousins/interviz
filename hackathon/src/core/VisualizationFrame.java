@@ -23,9 +23,9 @@ public class VisualizationFrame extends JFrame{
 		
 		addMouseMotionListener(listener);
 		
-		//frame.setDefaultCloseOperation(Frame.EXIT_ON_CLOSE);
 		this.width = width;
 		this.height = height;
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	public void init(){
 		buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
