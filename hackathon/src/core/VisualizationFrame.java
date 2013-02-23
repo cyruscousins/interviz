@@ -7,6 +7,8 @@ import java.awt.image.*;
 import java.awt.Image;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import java.io.File;
 
@@ -20,12 +22,17 @@ public class VisualizationFrame extends JFrame{
 	int xo = 5, yo = 25; //offsets
 	public VisualizationFrame(int width, int height, MouseMotionListener listener){
 		frame = new Frame();
+		this.frame.addWindowListener(new WindowAdapter() {
+		    public void windowClosing(WindowEvent e) {
+		         System.exit(0);
+		    }
+		});
 		
 		addMouseMotionListener(listener);
 		
-		//frame.setDefaultCloseOperation(Frame.EXIT_ON_CLOSE);
 		this.width = width;
 		this.height = height;
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	public void init(){
 		buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
