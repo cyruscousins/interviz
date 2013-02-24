@@ -7,7 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import com.echonest.api.v4.EchoNestException;
 import com.echonest.api.v4.Segment;
+import com.echonest.api.v4.TimedEvent;
+import com.echonest.api.v4.Track;
 import com.echonest.api.v4.TrackAnalysis;
 
 import math.F2Var;
@@ -66,18 +69,42 @@ public class Visualization {
 				else seg = segments.get(currentSegmentIndex);
 			}
 			
-			emitterTheta += dt * seg.getLoudnessMax();
+			emitterTheta += dt * seg.getLoudnessMax() / tLoudness;
 			emitterR = (float)(32 * seg.getLoudnessMax());
 
-			colR = (int)(seg.getConfidence() * 255);
-			colG = (int)(seg.getLoudnessMax() * 255);
-			colB = (int)(seg.getLoudnessMaxTime() * 255);
+			double[] timbres = seg.getTimbre(); //12 values, centered around 0
+			
+			colR = (int)((timbres[0] + 1) * 127);
+			colG = (int)((timbres[1] + 1) * 127);
+			colB = (int)((timbres[2] + 1) * 127);
+			
+			double[] pitches = seg.getPitches();
+			
+			for(int i = 0; i < pitches.length; i++){
+				if(pitches[i] > rand.nextDouble()){
+					
+					float x = 32;
+					float y = 32 * (2 + i);
+					
+					float dx = (float)pitches[i] - 1;
+					float dy = -rand.nextFloat() * .5f;
+					
+					float d2x = rand.nextFloat();
+					float d2y = 4; //GRAV
+
+					Polynomial radius = new Polynomial(new float[]{2, .3f, -.2f, .1f, -.05f});
+					
+					float MASS = 3;
+					
+					Particle p = new Particle(x, y, dx, dy, d2x, d2y, MASS, radius, colR, colG, colB);
+				}
+			}
 		}
 		
 		sourceX = (int)(frame.width / 2 + (Math.cos(emitterTheta) * emitterR));
 		sourceY = (int)(frame.height / 2 + (Math.sin(emitterTheta) * emitterR));
 		
-		for(int i = 0; i < 4; i++){
+		for(int i = 0; i < 2; i++){
 			float vel = (float)(50 * Math.random());
 			float theta = (float)(Math.random() * Math.PI * 2);
 			
@@ -106,8 +133,8 @@ public class Visualization {
 		
 		for(Particle p : particles){
 			
-			p.dx += noise.dydx(p.x, p.y) * dt;
-			p.dy += (noise.dydz(p.x, p.y)) * dt;
+//			p.dx += noise.dydx(p.x, p.y) * dt;
+//			p.dy += (noise.dydz(p.x, p.y)) * dt;
 			
 			p.dy -= ((p.y / frame.height) * (p.y / frame.height) * 128) * dt;
 			
@@ -120,10 +147,24 @@ public class Visualization {
 		}
 	}
 	
+	Track track;
+	TrackAnalysis analysis;
+	
+	List<TimedEvent> tatums;
 	List<Segment> segments;
 	int currentSegmentIndex;
 	float segT0;
-	public void setTrackAnalysis(TrackAnalysis analysis){
+	
+	float tLoudness;
+	
+	public void setTrack(Track track) throws EchoNestException{
+		this.track = track;
+		
+		tLoudness = (float)track.getLoudness();
+		
+		analysis = track.getAnalysis();
+		
+		tatums = analysis.getTatums();
 		segments = analysis.getSegments();
 		currentSegmentIndex = 0;
 		segT0 = time;

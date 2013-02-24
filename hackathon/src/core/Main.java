@@ -19,7 +19,7 @@ import com.echonest.api.v4.TrackAnalysis;
 
 public class Main {
 	
-	private static TrackAnalysis retrieveAnalysis(File songName){
+	private static Track retrieveTrack(File songName){
 		EchoNestAPI enApi = null;
 		try {
 			enApi = new EchoNestAPI("QGBFJRQABCWTIDEG0");
@@ -30,7 +30,7 @@ public class Main {
             Track track = enApi.uploadTrack(songName);
             track.waitForAnalysis(30000);
             if (track.getStatus() == Track.AnalysisStatus.COMPLETE) {
-                return track.getAnalysis();
+                return track;
             } else {
             	System.err.println("Trouble analysing track " + track.getStatus());
             	return null;
@@ -51,9 +51,15 @@ public class Main {
 		fc.setMultiSelectionEnabled(true);
 		fc.showOpenDialog(frame);
 		File[] songs = fc.getSelectedFiles();
-		TrackAnalysis analysis = null;
+		Track track = null;
 		if(songs.length > 0){
-			analysis = retrieveAnalysis(songs[0]);
+			track = retrieveTrack(songs[0]);
+			try{
+				vis.setTrack(track);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		for(int i = 0; i < 100000; i++){
 			float time = .01f;
