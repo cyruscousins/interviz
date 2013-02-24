@@ -34,20 +34,7 @@ public class Main {
 		
 		try {
 			songFile = AudioFileIO.read(song);
-		} catch (CannotReadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (org.jaudiotagger.tag.TagException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ReadOnlyFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidAudioFrameException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e){
 			e.printStackTrace();
 		}
 		
