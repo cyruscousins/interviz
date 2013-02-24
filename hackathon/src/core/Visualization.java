@@ -20,8 +20,6 @@ public class Visualization {
 	VisualizationFrame frame;
 	
 	ArrayList<Particle> particles = new ArrayList<Particle>();
-	ArrayList<Particle> trash = new ArrayList<Particle>();
-	
 	
 	F2Var noise;
 	
@@ -63,6 +61,7 @@ public class Visualization {
 			newSegCount = 4;
 		}
 		else{
+			TimedEvent event = tatums.get(currentSegmentIndex);
 			Segment seg = segments.get(currentSegmentIndex);
 			
 			while(time - segT0 > seg.getDuration()){
@@ -72,6 +71,7 @@ public class Visualization {
 					System.out.println("SONG FINISHED!");
 				}
 				else seg = segments.get(currentSegmentIndex);
+				System.out.println("NEW SEGMENT");
 			}
 			
 			float relativeLoudness = (float)(seg.getLoudnessMax() / tLoudness);
@@ -89,12 +89,13 @@ public class Visualization {
 			colG = (int)((timbres[1] + 1) * 127);
 			colB = (int)((timbres[2] + 1) * 127);
 			
-			//How many particles does the emitter emit?
-			float countTemp = relativeLoudness * relativeLoudness * dt * 100;
+			//How many particles does the center emitter emit?
+			float countTemp = relativeLoudness * relativeLoudness * dt * 20;
 			newSegCount = (int) countTemp + (rand.nextFloat() < (countTemp - (int) countTemp) ? 1 : 0);
 
-			if(rand.nextFloat() > .75f) System.out.println("NEWSEGS: " + newSegCount);
+			if(rand.nextFloat() > .99f) System.out.println("NEWSEGS: " + newSegCount);
 			
+			//PITCH CLASS EMITTERS:
 			double[] pitches = seg.getPitches();
 			
 			for(int i = 0; i < pitches.length; i++){
@@ -121,7 +122,9 @@ public class Visualization {
 			}
 		}
 		
-		sourceX = (int)(frame.width / 2 + (Math.cos(emitterTheta) * emitterR));
+		//CENTER EMITTERS
+		
+		sourceX = (int)(frame.width  / 2 + (Math.cos(emitterTheta) * emitterR));
 		sourceY = (int)(frame.height / 2 + (Math.sin(emitterTheta) * emitterR));
 		
 		for(int i = 0; i < 2; i++){
@@ -151,19 +154,19 @@ public class Visualization {
 //			particles.add(new Particle(rand.nextInt(frame.width), rand.nextInt(frame.height), dx, dy, 1, radius));
 		}
 		
-		for(Particle p : particles){
-			
+		int len = particles.size();
+		for(int i = 0; i < len; i++){
+			Particle p = particles.get(i);
+
 //			p.dx += noise.dydx(p.x, p.y) * dt;
 //			p.dy += (noise.dydz(p.x, p.y)) * dt;
 			
+			//Push away from bottom edge
 			p.dy -= ((p.y / frame.height) * (p.y / frame.height) * 128) * dt;
 			
-			p.update(dt);
-			if(p.rad < 0) trash.add(p);
-		}
-		
-		for(Particle p : trash){
-			particles.remove(p);
+			if(p.update(dt)){ //if dead
+				particles.set(i--, particles.remove(--len));
+			}
 		}
 	}
 	

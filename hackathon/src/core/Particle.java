@@ -41,7 +41,8 @@ public class Particle {
 		bb = colB;
 	}
 
-	public void update(float time){
+	//returns true on death.
+	public boolean update(float time){
 		x += dx * time;
 		y += dy * time;
 		
@@ -49,11 +50,13 @@ public class Particle {
 		dy += d2y * time;
 		
 		this.time += time;
+		
+		rad = radius.val(time);
+		
+		return rad < 0;
 	}
 	
 	public void render(Graphics g) {
-		rad = radius.val(time);
-		
 		g.setColor(col(time, x, y, br, bg, bb));
 		g.drawOval((int)(x - rad), (int)(y - rad), (int)(rad * 2 + 1), (int)(rad * 2 + 1));
 	}
