@@ -59,9 +59,9 @@ public class Particle {
 	}
 	
 	public Color col(float time, float x, float y, int br, int bg, int bb){
-		int dIntens = 45;
+		int dIntens = 40;
 		float psclr = .01f;
-		time *= .1f;
+		time *= 1f;
 		return new Color(
 				lim((int)(Math.sin(time + x * psclr) * dIntens) + br, 0, 255), 
 				lim((int)(Math.sin(time + y * psclr) * dIntens) + bg, 0, 255), 

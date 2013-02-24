@@ -98,20 +98,20 @@ public class Visualization {
 			double[] pitches = seg.getPitches();
 			
 			for(int i = 0; i < pitches.length; i++){
-				if(pitches[i] * pitches[i] > rand.nextDouble()){
+				if(pitches[i] * pitches[i] > rand.nextDouble() + .25f){
 					
 					float x = 32;
-					float y = 50 * (2 + i);
+					float y = 40 * (1 + i);
 					
 					y *= rand.nextInt(2) + 1;
 					
-					float dx = (float)(pitches[i] - 1) * 20;
+					float dx = (float)(pitches[i]) * 400;
 					float dy = -rand.nextFloat() * 10f;
 					
 					float d2x = rand.nextFloat();
-					float d2y = 50; //GRAV
+					float d2y = 20; //GRAV
 
-					Polynomial radius = new Polynomial(new float[]{2, .3f, -.225f, .1f, -.075f});
+					Polynomial radius = new Polynomial(new float[]{(float)pitches[i] + 2, .3f, -.225f, .1f, -.075f});
 					
 					float MASS = 3;
 					

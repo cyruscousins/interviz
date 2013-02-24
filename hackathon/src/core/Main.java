@@ -63,7 +63,7 @@ public class Main {
 			}
 		}
 		for(int i = 0; i < 100000; i++){
-			float time = .01f;
+			float time = .02f;
 			vis.update(time);
 			try{
 				Thread.sleep((int)(1000 * time));
