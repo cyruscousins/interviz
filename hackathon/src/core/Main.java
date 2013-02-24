@@ -1,19 +1,18 @@
 package core;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.CannotReadException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 
+import com.echonest.api.v3.track.TrackAPI;
+
 public class Main {
+
 	public static void main(String[] args){
 		
 		VisualizationFrame frame = new VisualizationFrame(800, 600, null);
@@ -25,7 +24,7 @@ public class Main {
 		final JFileChooser fc = new JFileChooser();
 		int returnVal = fc.showOpenDialog(frame);
 		File song = fc.getSelectedFile();
-		
+
 		if(song == null){
 			System.exit(1);
 		}
@@ -42,7 +41,15 @@ public class Main {
 		System.out.println(tag.getFirst(FieldKey.ARTIST) + 
 		tag.getFirst(FieldKey.ALBUM) + 
 		tag.getFirst(FieldKey.TITLE));
-
+		
+		TrackAPI trackAPI = null;
+		
+		try {
+			trackAPI = new TrackAPI("QGBFJRQABCWTIDEG0");
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		for(int i = 0; i < 100000; i++){
 			float time = .01f;
