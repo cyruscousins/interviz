@@ -5,8 +5,13 @@ import java.io.IOException;
 
 import javax.swing.JFileChooser;
 
-import org.farng.mp3.MP3File;
-import org.farng.mp3.TagException;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 
 public class Main {
 	public static void main(String[] args){
@@ -21,17 +26,36 @@ public class Main {
 		int returnVal = fc.showOpenDialog(frame);
 		File song = fc.getSelectedFile();
 		
+		if(song == null){
+			System.exit(1);
+		}
+		
+		AudioFile songFile = null;
+		
 		try {
-			MP3File mp3song = new MP3File(song);
+			songFile = AudioFileIO.read(song);
+		} catch (CannotReadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (TagException e) {
+		} catch (org.jaudiotagger.tag.TagException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ReadOnlyFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAudioFrameException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		
+		Tag tag = songFile.getTag();
+		System.out.println(tag.getFirst(FieldKey.ARTIST) + 
+		tag.getFirst(FieldKey.ALBUM) + 
+		tag.getFirst(FieldKey.TITLE));
+
 		
 		for(int i = 0; i < 100000; i++){
 			vis.update();
