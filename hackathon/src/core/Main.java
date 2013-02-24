@@ -4,16 +4,12 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
+import com.echonest.api.v4.EchoNestAPI;
+import com.echonest.api.v4.EchoNestException;
+import com.echonest.api.v4.Track;
+import com.echonest.api.v4.Track.AnalysisStatus;
+import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
 
-import com.echonest.api.v3.EchoNestException;
-import com.echonest.api.v3.track.FloatWithConfidence;
-import com.echonest.api.v3.track.Metadata;
-import com.echonest.api.v3.track.TrackAPI;
-import com.echonest.api.v3.track.TrackAPI.AnalysisStatus;
 
 public class Main {
 
@@ -26,7 +22,7 @@ public class Main {
 		frame.init();
 		
 		final JFileChooser fc = new JFileChooser();
-		int returnVal = fc.showOpenDialog(frame);
+		fc.showOpenDialog(frame);
 		File song = fc.getSelectedFile();
 
 		if(song == null){
@@ -42,7 +38,7 @@ public class Main {
 				vis.render();
 			}
 		} else {
-			
+			/*
 			AudioFile songFile = null;
 			
 			try {
@@ -55,28 +51,31 @@ public class Main {
 			System.out.println(tag.getFirst(FieldKey.ARTIST) + 
 			tag.getFirst(FieldKey.ALBUM) + 
 			tag.getFirst(FieldKey.TITLE));
-			
-			TrackAPI trackAPI = null;
+			*/
+			EchoNestAPI enApi = null;
 			
 			try {
-				trackAPI = new TrackAPI("QGBFJRQABCWTIDEG0");
+				enApi = new EchoNestAPI("QGBFJRQABCWTIDEG0");
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			
 			try {
-				String id = trackAPI.uploadTrack(song, false);
-				AnalysisStatus status = trackAPI.waitForAnalysis(id, 60000);
-	            if (status == AnalysisStatus.COMPLETE) {
-	                Metadata metadata = trackAPI.getMetadata(id);
-	                FloatWithConfidence bpm = trackAPI.getTempo(id);
-	                System.out.println("Metadata:");
-	                System.out.println(metadata);
-	                System.out.println("BPM is " + bpm);
+                Track track = enApi.uploadTrack(song);
+                track.waitForAnalysis(30000);
+	            if (track.getStatus() == Track.AnalysisStatus.COMPLETE) {
+	            	System.out.println("Tempo: " + track.getTempo());
+                    System.out.println("Danceability: " + track.getDanceability());
+                    System.out.println("Speechiness: " + track.getSpeechiness());
+                    System.out.println("Liveness: " + track.getLiveness());
+                    System.out.println("Energy: " + track.getEnergy());
+                    System.out.println("Loudness: " + track.getLoudness());
+                    System.out.println();
+                    System.out.println("Beat start times:");
 	            } else {
-	                System.out.println("Status is " + status);
+	            	System.err.println("Trouble analysing track " + track.getStatus());
 	            }
-			} catch (EchoNestException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			
