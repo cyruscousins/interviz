@@ -40,10 +40,10 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 		visualizations.add(new CenterVisualization(this));
 		visualizations.add(new PitchClassEmitter(this));
 		visualizations.add(new Accentuator(this));
-		//visualizations.add(new CenterVisualizationPitchClass(this));
+		visualizations.add(new CenterVisualizationPitchClass(this));
 //		visualizations.add(new AcceloVisualizer(this));
-		//visualizations.add(new BeatPulser(this));
-		//visualizations.add(new BeatPulser(this));
+		visualizations.add(new BeatPulser(this));
+		visualizations.add(new BeatPulser(this));
 		
 		frame.frame.addMouseMotionListener(this);
 		frame.frame.addMouseListener(this);
@@ -132,9 +132,9 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 	}
 
 	public void updateFlush(float dt){
-		if(currentSegmentIndex >= segments.size() || currentBeatIndex >= beats.size())
-			return;
 		this.time += dt;
+		
+		int currentSegmentIndex = segments.size() - 1;
 		
 		float interpAmt = (float)Math.pow(.1f, dt);
 		

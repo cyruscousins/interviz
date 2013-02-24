@@ -28,7 +28,7 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
-		VisualizationFrame frame = new VisualizationFrame(800, 600);
+		VisualizationFrame frame = new VisualizationFrame(1000, 700);
 		
 		VisualizationManager vis = new VisualizationManager(frame);
 

@@ -15,7 +15,7 @@ public class CenterVisualizationPitchClass extends Visualization{
 		int sourceX = (int)(parent.frame.width  / 2);
 		int sourceY = (int)(parent.frame.height / 2);
 		
-		float rawEmitAmt = parent.relativeLoudness * parent.relativeLoudness * onFrac * dt * 100;
+		float rawEmitAmt = parent.relativeLoudness * parent.relativeLoudness * onFrac * dt * 90;
 		
 		if(parent.relativeLoudness > 0){
 			double[] pitches = parent.segments.get(parent.currentSegmentIndex).getPitches();
@@ -47,7 +47,7 @@ public class CenterVisualizationPitchClass extends Visualization{
 						float d2x = (float)(grav * Math.cos(gravDir)) - dx * .75f;
 						float d2y = (float)(grav * Math.sin(gravDir)) - dy * .75f;
 						
-						Polynomial radius = new Polynomial(new float[]{2.5f, 1f + parent.rand.nextFloat() * .5f, -.25f - parent.rand.nextFloat() * .125f});
+						Polynomial radius = new Polynomial(new float[]{2.5f, 1f + parent.rand.nextFloat() * .5f, -.3f - parent.rand.nextFloat() * .3f});
 						
 						Particle p = new Particle(sourceX, sourceY, dx, dy, d2x, d2y, 1, radius, colR, colG, colB);
 						p.update(.2f);

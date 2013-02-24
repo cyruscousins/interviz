@@ -21,7 +21,11 @@ public class Particle {
 	
 	float time;
 	
-	int br, bg, bb;
+	int br, bg, bb, ba;
+	
+	static final int types = 4;
+	static int lastType;
+	int type = lastType++ % types;
 
 	public Particle(float x, float y, float dx, float dy, float d2x, float d2y, float mass, F1Var radius, int colR, int colG, int colB) {
 		this.x = x;
@@ -39,6 +43,8 @@ public class Particle {
 		br = colR;
 		bg = colG;
 		bb = colB;
+		
+		ba = Math.min(255, lastType % 250 + 50);
 	}
 
 	//returns true on death.
@@ -58,7 +64,18 @@ public class Particle {
 	
 	public void render(Graphics g) {
 		g.setColor(col(time, x, y, br, bg, bb));
-		g.drawOval((int)(x - rad), (int)(y - rad), (int)(rad * 2 + 1), (int)(rad * 2 + 1));
+		if(type == 0){
+			g.fillRect((int)(x - rad), (int)(y - rad), (int)(rad * 2 + 1), (int)(rad * 2 + 1));
+		}
+		else if(type == 1){
+			g.drawRect((int)(x - rad), (int)(y - rad), (int)(rad * 2 + 1), (int)(rad * 2 + 1));
+		}
+		else if(type == 2){
+			g.fillOval((int)(x - rad), (int)(y - rad), (int)(rad * 2 + 1), (int)(rad * 2 + 1));
+		}
+		else if(type == 3){
+			g.drawOval((int)(x - rad), (int)(y - rad), (int)(rad * 2 + 1), (int)(rad * 2 + 1));
+		}
 	}
 	
 	public Color col(float time, float x, float y, int br, int bg, int bb){
@@ -69,7 +86,7 @@ public class Particle {
 				lim((int)(Math.sin(time + x * psclr) * dIntens) + br, 0, 255), 
 				lim((int)(Math.sin(time + y * psclr) * dIntens) + bg, 0, 255), 
 				lim((int)(Math.sin(time + (x + y) * psclr) * dIntens) + bb, 0, 255),
-				100);
+				(int)(ba * Math.min(rad * .25f, 1)));
 	}
 	
 	int lim(int i, int a, int b){

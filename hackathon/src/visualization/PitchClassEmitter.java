@@ -40,7 +40,7 @@ public class PitchClassEmitter extends Visualization{
 				float d2x = rand.nextFloat() * 25;
 				float d2y = 20; //GRAV
 
-				Polynomial radius = new Polynomial(new float[]{(float)pitches[i] + 2, .125f + (float)pitches[i] * .125f, -.25f + rand.nextFloat() * .125f});
+				Polynomial radius = new Polynomial(new float[]{(float)pitches[i] + 2, .125f + (float)pitches[i] * .125f, -.25f - rand.nextFloat() * .125f});
 				
 				float MASS = 3;
 				
