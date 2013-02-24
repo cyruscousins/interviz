@@ -29,6 +29,10 @@ public abstract class Visualization {
 			
 			if(p.update(dt)){ //if dead
 				len--;
+				if(i == len){ //last elem
+					particles.remove(len);
+					break;
+				}
 				particles.set(i, particles.remove(len));
 				i--;
 			}

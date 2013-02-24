@@ -43,7 +43,9 @@ public class VisualizationFrame extends JFrame{
 		frameG = frame.getGraphics();
 		blurColumnOffset = 1;
 	}
+	int a;
 	public void drawToScreen(){
+		testBlur(a++ % 2);
 		//blurScreen(0.5f, 0, 0.5f, 0);
 		frameG.drawImage(buffer, xo, yo, null);
 	}
@@ -78,5 +80,22 @@ public class VisualizationFrame extends JFrame{
 	private int mergePixels(int p1, int p2, int p3, int p4, int p5, float denominator, int bitOffset) {
 		int mask = 0xFF << bitOffset;
 		return ((int)((p1 & mask + p2 & mask + p3 & mask + p4 & mask + p5 & mask) / denominator)) >>> bitOffset;
+	}
+	
+	public void testBlur(int s){
+		for(int y = 1; y < height - 1; y++){
+			for(int x = 1 + (y % 2) + s; x < width - 1; x+=2){
+				int i = x + y * width;
+				
+				int mul = 2;
+				int div = 4;
+				
+				imgInt[i] = 
+						((((0x0000ff & imgInt[i - 1]) + (0x0000ff & imgInt[i - width]) + (0x0000ff & imgInt[i]) * mul) >>  0) / div) <<  0 |
+						((((0x00ff00 & imgInt[i - 1]) + (0x00ff00 & imgInt[i - width]) + (0x00ff00 & imgInt[i]) * mul) >>  8) / div) <<  8 | 
+						((((0xff0000 & imgInt[i - 1]) + (0xff0000 & imgInt[i - width]) + (0xff0000 & imgInt[i]) * mul) >> 16) / div) << 16
+						;
+			}
+		}
 	}
 }
