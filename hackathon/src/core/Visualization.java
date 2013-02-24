@@ -33,17 +33,23 @@ public class Visualization {
 	
 	int emitCount;
 	
+	float relativeLoudness;
+	
+	float tempoNow;
+	
+	int colR, colG, colB;
+	
+	
 	Random rand = new Random();
+	
 	public void update(float dt){
 		this.time += dt;
 		
 
-		float tempoNow;
 		int sourceX, sourceY;
-		
-		int colR, colG, colB;
-		
 		int newSegCount;
+		
+		float interpAmt = (float)Math.pow(.1f, dt);
 		
 		if(segments == null){
 			
@@ -61,7 +67,6 @@ public class Visualization {
 			newSegCount = 4;
 		}
 		else{
-			TimedEvent event = tatums.get(currentSegmentIndex);
 			Segment seg = segments.get(currentSegmentIndex);
 			
 			while(time - segT0 > seg.getDuration()){
@@ -74,20 +79,21 @@ public class Visualization {
 				System.out.println("NEW SEGMENT");
 			}
 			
-			float relativeLoudness = (float)(seg.getLoudnessMax() / tLoudness);
+			relativeLoudness = interpolate(interpAmt, relativeLoudness, (float)(seg.getLoudnessMax() / tLoudness));
+			// interpAmt * relativeLoudness + (1 - interpAmt * (float)(seg.getLoudnessMax() / tLoudness));
 			
 //			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
 			
 			tempoNow = 120; //TODO
 			
 			emitterTheta += dt * tempoNow / 60;
-			emitterR = (float)(32 * relativeLoudness);
+			emitterR = (float)(50 * relativeLoudness);
 
 			double[] timbres = seg.getTimbre(); //12 values, centered around 0
 			
-			colR = (int)((timbres[0] + 1) * 127);
-			colG = (int)((timbres[1] + 1) * 127);
-			colB = (int)((timbres[2] + 1) * 127);
+			colR = (int)interpolate(interpAmt, colR, (float)(timbres[0] + 1) * 127);
+			colG = (int)interpolate(interpAmt, colG, (float)(timbres[1] + 1) * 127);
+			colB = (int)interpolate(interpAmt, colB, (float)(timbres[2] + 1) * 127);
 			
 			//How many particles does the center emitter emit?
 			float countTemp = relativeLoudness * relativeLoudness * dt * 20;
@@ -106,8 +112,8 @@ public class Visualization {
 					
 					y *= rand.nextInt(2) + 1;
 					
-					float dx = (float)(pitches[i]) * 400;
-					float dy = -rand.nextFloat() * 10f;
+					float dx = (float)(pitches[i]) * 50;
+					float dy = -rand.nextFloat() * 5f;
 					
 					float d2x = rand.nextFloat();
 					float d2y = 20; //GRAV
@@ -128,10 +134,10 @@ public class Visualization {
 		sourceY = (int)(frame.height / 2 + (Math.sin(emitterTheta) * emitterR));
 		
 		for(int i = 0; i < 2; i++){
-			float vel = (float)(50 * Math.random());
+			float vel = (float)(25 * Math.random());
 			float theta = (float)(Math.random() * Math.PI * 2);
 			
-			float grav = 100f;
+			float grav = 50f;
 //			float gravDir = (float)(Math.random() * Math.PI * 2);
 
 			float gravDir = (float)(Math.PI * 1 / 2);
@@ -202,5 +208,9 @@ public class Visualization {
 			particle.render(g);
 		}
 		frame.drawToScreen();
+	}
+	
+	public float interpolate(float interp, float a, float b){
+		return a * interp + (1 - interp) * b;
 	}
 }

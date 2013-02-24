@@ -39,7 +39,7 @@ public class Main {
 		fc.setMultiSelectionEnabled(true);
 		fc.showOpenDialog(frame);
 		File[] songs = fc.getSelectedFiles();
-		Mp3Player.playSound(songs[0]);
+//		Mp3Player.playSound(songs[0]);
 		Track track = null;
 		if(songs.length > 0){
 			track = retrieveTrack(songs[0]);
