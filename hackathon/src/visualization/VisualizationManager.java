@@ -58,6 +58,67 @@ public class VisualizationManager {
 	boolean newBeat = false;
 	
 	public void update(float dt){
+		if(currentSegmentIndex >= segments.size() || currentBeatIndex >= beats.size()){
+			updateFlush(dt);
+			return;
+		}
+		this.time += dt;
+		
+		float interpAmt = (float)Math.pow(.1f, dt);
+		
+
+		Segment seg = segments.get(currentSegmentIndex);
+		
+		while(time - segT0 > seg.getDuration()){
+			segT0 += seg.getDuration();
+			currentSegmentIndex++;
+			if(currentSegmentIndex >= segments.size()){
+				System.out.println("SONG FINISHED (segments)!");
+				return;
+			}
+			else seg = segments.get(currentSegmentIndex);
+			
+		}
+		
+		TimedEvent beat = beats.get(currentBeatIndex);
+
+		newBeat = false;
+		
+		while(time - beatT0 > beat.getDuration()){
+			beatT0 += beat.getDuration();
+			currentBeatIndex++;
+			if(currentBeatIndex >= segments.size()){
+				System.out.println("SONG FINISHED (beats)!");
+				return;
+			}
+			else seg = segments.get(currentBeatIndex);
+			System.out.println("BEAT");
+			
+			newBeat = true;
+		}
+		
+		relativeLoudness = interpolate(interpAmt, relativeLoudness, (float)(seg.getLoudnessMax() / tLoudness));
+		// interpAmt * relativeLoudness + (1 - interpAmt * (float)(seg.getLoudnessMax() / tLoudness));
+		
+//			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
+		
+		tempoNow = tempoNow; //TODO
+		
+		emitterTheta += dt * tempoNow / 60;
+		emitterR = (float)(50 * relativeLoudness);
+
+		double[] timbres = seg.getTimbre(); //12 values, centered around 0
+		
+		colR = (int)interpolate(interpAmt, colR, (float)(timbres[0] + 1) * 127);
+		colG = (int)interpolate(interpAmt, colG, (float)(timbres[1] + 1) * 127);
+		colB = (int)interpolate(interpAmt, colB, (float)(timbres[2] + 1) * 127);
+		
+		for(int i = 0; i < visualizations.size(); i++){
+			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .5f + .5f) * (newBeat ? 2 : 1));
+		}
+	}
+
+	public void updateFlush(float dt){
 		if(currentSegmentIndex >= segments.size() || currentBeatIndex >= beats.size())
 			return;
 		this.time += dt;
@@ -112,7 +173,7 @@ public class VisualizationManager {
 		colB = (int)interpolate(interpAmt, colB, (float)(timbres[2] + 1) * 127);
 		
 		for(int i = 0; i < visualizations.size(); i++){
-			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .5f + .5f) * (newBeat ? 2 : 1));
+			visualizations.get(i).update(dt, 0);
 		}
 	}
 	
