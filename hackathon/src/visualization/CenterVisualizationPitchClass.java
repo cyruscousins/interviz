@@ -49,7 +49,7 @@ public class CenterVisualizationPitchClass extends Visualization{
 						
 						Polynomial radius = new Polynomial(new float[]{2.5f, 1f + parent.rand.nextFloat() * .5f, -.3f - parent.rand.nextFloat() * .3f});
 						
-						Particle p = new Particle(sourceX, sourceY, dx, dy, d2x, d2y, 1, radius, colR, colG, colB);
+						Particle p = new Particle(sourceX, sourceY, dx, dy, d2x, d2y, 1, radius, colR, colG, colB, parent.clearness, parent.squareness, parent.strangeness);
 						p.update(.2f);
 						
 						particles.add(p);

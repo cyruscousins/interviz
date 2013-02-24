@@ -19,6 +19,7 @@ import com.echonest.api.v4.TrackAnalysis;
 
 import core.VisualizationFrame;
 
+import math.F1Var;
 import math.F2Var;
 import math.Polynomial;
 
@@ -44,22 +45,22 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 //		visualizations.add(new AcceloVisualizer(this));
 		visualizations.add(new BeatPulser(this));
 		visualizations.add(new BeatPulser(this));
+		visualizations.add(new BeatPulser(this));
 		
 		frame.frame.addMouseMotionListener(this);
 		frame.frame.addMouseListener(this);
 	}
 	
 	public float time;
-	public float emitterTheta, emitterR;
 	
 	public int emitCount;
 	
 	public float relativeLoudness;
 	
-	public float tempoNow;
+	public float tempoNow, beatConfidence;
 	
 	public int colR, colG, colB;
-	
+	public int clearness, squareness, strangeness;
 	
 	Random rand = new Random();
 
@@ -100,31 +101,23 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 		while(time - beatT0 > beat.getDuration()){
 			beatT0 += beat.getDuration();
 			currentBeatIndex++;
-			if(currentBeatIndex >= segments.size()){
+			if(currentBeatIndex >= beats.size()){
 				System.out.println("SONG FINISHED (beats)!");
 				return;
 			}
-			else seg = segments.get(currentBeatIndex);
-			System.out.println("BEAT");
+			else beat = beats.get(currentBeatIndex);
 			
 			newBeat = true;
+			beatConfidence = (float) beat.getConfidence();
+			
+			tempoNow = (float)(60 / beat.getDuration());
+//			System.out.println(tempoNow);
 		}
 		
 		relativeLoudness = interpolate(interpAmt, relativeLoudness, (float)(seg.getLoudnessMax() / tLoudness));
-		// interpAmt * relativeLoudness + (1 - interpAmt * (float)(seg.getLoudnessMax() / tLoudness));
 		
-//			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
-		
-		tempoNow = tempoNow; //TODO
-		
-		emitterTheta += dt * tempoNow / 60;
-		emitterR = (float)(50 * relativeLoudness);
 
-		double[] timbres = seg.getTimbre(); //12 values, centered around 0
-		
-		colR = (int)interpolate(interpAmt, colR, (float)(timbres[0] + 1) * 127);
-		colG = (int)interpolate(interpAmt, colG, (float)(timbres[1] + 1) * 127);
-		colB = (int)interpolate(interpAmt, colB, (float)(timbres[2] + 1) * 127);
+		calcParticles(interpAmt, seg);
 		
 		for(int i = 0; i < visualizations.size(); i++){
 			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .5f + .5f) * (newBeat ? 2 : 1));
@@ -141,53 +134,31 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 
 		Segment seg = segments.get(currentSegmentIndex);
 		
-		while(time - segT0 > seg.getDuration()){
-			segT0 += seg.getDuration();
-			currentSegmentIndex++;
-			if(currentSegmentIndex >= segments.size()){
-				System.out.println("SONG FINISHED (segments)!");
-				return;
-			}
-			else seg = segments.get(currentSegmentIndex);
-			
-		}
-		
-		TimedEvent beat = beats.get(currentBeatIndex);
-
+		TimedEvent beat = beats.get(currentBeatIndex - 1);
 		newBeat = false;
+		beatConfidence = 0;
 		
-		while(time - beatT0 > beat.getDuration()){
-			beatT0 += beat.getDuration();
-			currentBeatIndex++;
-			if(currentBeatIndex >= segments.size()){
-				System.out.println("SONG FINISHED (beats)!");
-				return;
-			}
-			else seg = segments.get(currentBeatIndex);
-//			System.out.println("BEAT");
-			
-			newBeat = true;
-		}
+		relativeLoudness = interpolate(interpAmt, relativeLoudness, 0);
 		
-		relativeLoudness = interpolate(interpAmt, relativeLoudness, (float)(seg.getLoudnessMax() / tLoudness));
-		// interpAmt * relativeLoudness + (1 - interpAmt * (float)(seg.getLoudnessMax() / tLoudness));
-		
-//			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
-		
-		tempoNow = tempoNow; //TODO
-		
-		emitterTheta += dt * tempoNow / 60;
-		emitterR = (float)(50 * relativeLoudness);
+		tempoNow = (float)(Math.pow(.5f, dt) * tempoNow);
 
-		double[] timbres = seg.getTimbre(); //12 values, centered around 0
-		
-		colR = (int)interpolate(interpAmt, colR, (float)(timbres[0] + 1) * 127);
-		colG = (int)interpolate(interpAmt, colG, (float)(timbres[1] + 1) * 127);
-		colB = (int)interpolate(interpAmt, colB, (float)(timbres[2] + 1) * 127);
+		calcParticles(interpAmt, seg);
 		
 		for(int i = 0; i < visualizations.size(); i++){
 			visualizations.get(i).update(dt, 0);
 		}
+	}
+	
+	public void calcParticles(float interpAmt, Segment seg){
+		double[] timbres = seg.getTimbre(); //12 values, centered around 0
+		
+		colR = (int)interpolate(interpAmt, colR, (float)(2 + timbres[0] * 1.5 + (timbres[3] + timbres[4]) * .25) * 64);
+		colG = (int)interpolate(interpAmt, colG, (float)(2 + timbres[1] * 1.5 + (timbres[3] + timbres[5]) * .25) * 64);
+		colB = (int)interpolate(interpAmt, colB, (float)(2 + timbres[2] * 1.5 + (timbres[4] + timbres[5]) * .25) * 64);
+		
+		squareness  = (int)interpolate(interpAmt, squareness,  (float)((1 + timbres[6]) * 127.9));
+		strangeness = (int)interpolate(interpAmt, strangeness, (float)((1 + timbres[7]) * 127.9));
+		clearness   = (int)interpolate(interpAmt, clearness,   (float)((1 + timbres[8]) * 127.9));
 	}
 	
 	Track track;
@@ -220,7 +191,7 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 	
 	public void render(){
 		Graphics g = frame.bufferG;
-		g.setColor(new Color(0, 0, 0, 12));
+		g.setColor(new Color(0, 0, 0, 8));
 		g.fillRect(0, 0, frame.width, frame.height);
 		
 		for(Visualization vis : visualizations){
@@ -233,6 +204,11 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 	public float interpolate(float interp, float a, float b){
 		return a * interp + (1 - interp) * b;
 	}
+	
+	public Particle genParticle(float x, float y, float dx, float dy, float d2x, float d2y, float mass, F1Var radius){
+		return new Particle(x, y, dx, dy, d2x, d2y, 1, radius, colR, colG, colB, clearness, squareness, strangeness);
+	}
+	
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {

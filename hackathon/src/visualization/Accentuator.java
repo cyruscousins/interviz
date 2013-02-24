@@ -71,7 +71,7 @@ public class Accentuator extends Visualization{
 				float tRad = parent.rand.nextFloat() * 20;
 				
 				Polynomial radius = new Polynomial(new float[]{1, 2, -1.5f + .5f * parent.rand.nextFloat()});
-				Particle p = new Particle(x, y, dx + (float)(Math.cos(tTheta)) * tRad, dy + (float)(Math.sin(tTheta)) * tRad, d2x, d2y, 4, radius, parent.colR, parent.colG, parent.colB);
+				Particle p = parent.genParticle(x, y, dx + (float)(Math.cos(tTheta)) * tRad, dy + (float)(Math.sin(tTheta)) * tRad, d2x, d2y, 4, radius);
 				particles.add(p);
 				
 			}

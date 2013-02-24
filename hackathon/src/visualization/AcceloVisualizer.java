@@ -34,7 +34,7 @@ public class AcceloVisualizer extends Visualization{
 			
 			Polynomial radius = new Polynomial(new float[]{1.5f, .3f + parent.rand.nextFloat() * .25f, -.225f});
 			
-			Particle p = new Particle(sourceX, sourceY, dx, dy, d2x, d2y, 1, radius, parent.colR, parent.colG, parent.colB);
+			Particle p = parent.genParticle(sourceX, sourceY, dx, dy, d2x, d2y, 1, radius);
 			p.update(.2f);
 			
 			particles.add(p);

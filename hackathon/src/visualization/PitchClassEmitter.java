@@ -44,7 +44,7 @@ public class PitchClassEmitter extends Visualization{
 				
 				float MASS = 3;
 				
-				Particle p = new Particle(x, y, dx + (float)(Math.cos(theta) * r), dy + (float)(Math.sin(theta) * r), d2x, d2y, MASS, radius, parent.colR, parent.colG, parent.colB);
+				Particle p = parent.genParticle(x, y, dx + (float)(Math.cos(theta) * r), dy + (float)(Math.sin(theta) * r), d2x, d2y, MASS, radius);
 				particles.add(p);
 				
 				if(bothSides){

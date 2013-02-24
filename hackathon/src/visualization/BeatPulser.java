@@ -20,7 +20,7 @@ public class BeatPulser extends Visualization{
 			y0 = parent.rand.nextFloat() * parent.frame.height;
 		}
 		
-		float rawEmitAmt = parent.relativeLoudness * parent.relativeLoudness * onFrac * dt * 128 * life / maxLife;
+		float rawEmitAmt = parent.relativeLoudness * parent.beatConfidence * onFrac * dt * 128 * life / maxLife;
 		
 		int emitAmt = (int)(rawEmitAmt) + (parent.rand.nextFloat() < (rawEmitAmt - (int) rawEmitAmt) ? 1 : 0);
 		
@@ -44,7 +44,7 @@ public class BeatPulser extends Visualization{
 			
 			Polynomial radius = new Polynomial(new float[]{2f + life * life / (maxLife * maxLife) * 2, 8f + parent.rand.nextFloat() * 4f, -50f});
 			
-			Particle p = new Particle(x0, y0, dx, dy, d2x, d2y, 1, radius, parent.colR, parent.colG, parent.colB);
+			Particle p = parent.genParticle(x0, y0, dx, dy, d2x, d2y, 1, radius);
 			p.update(.05f);
 			
 			particles.add(p);

@@ -48,16 +48,12 @@ public class RingVisualizer extends Visualization{
 			float d2x = -x * .5f - grav;
 			float d2y = -y * .5f;
 			
-//			Polynomial dx = new Polynomial(new float[]{(float)(vel * Math.cos(theta)), (float)(grav * Math.cos(gravDir)), -.05f, .025f, -.0125f});
-//			Polynomial dy = new Polynomial(new float[]{(float)(vel * Math.sin(theta)), (float)(grav * Math.sin(gravDir)), -.05f, .025f, -.0125f});
-			
 			Polynomial radius = new Polynomial(new float[]{1.5f, .35f + parent.rand.nextFloat() * .5f, -.225f});
 			
-			Particle p = new Particle(x, y, dx, dy, d2x, d2y, 1, radius, parent.colR, parent.colG, parent.colB);
+			Particle p = parent.genParticle(x, y, dx, dy, d2x, d2y, 1, radius);
 			p.update(.2f);
 			
 			particles.add(p);
-//			particles.add(new Particle(rand.nextInt(frame.width), rand.nextInt(frame.height), dx, dy, 1, radius));
 		}
 		
 		//Update particles
