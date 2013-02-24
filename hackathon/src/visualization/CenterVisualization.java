@@ -15,14 +15,14 @@ public class CenterVisualization extends Visualization{
 		int sourceX = (int)(parent.frame.width  / 2 + (Math.cos(emitterTheta) * emitterR));
 		int sourceY = (int)(parent.frame.height / 2 + (Math.sin(emitterTheta) * emitterR));
 		
-		float rawEmitAmt = parent.relativeLoudness * parent.relativeLoudness * onFrac * dt;
+		float rawEmitAmt = parent.relativeLoudness * parent.relativeLoudness * onFrac * dt * 60;
 		
 		int emitAmt = (int)(rawEmitAmt) + (parent.rand.nextFloat() < (rawEmitAmt - (int) rawEmitAmt) ? 1 : 0);
 		
 		if(parent.relativeLoudness < 0) emitAmt = 0;
 		
 		for(int i = 0; i < emitAmt; i++){
-			float vel = (float)(25 * parent.rand.nextFloat());
+			float vel = (float)(25 * parent.rand.nextFloat()) * parent.relativeLoudness;
 			float theta = (float)(Math.random() * Math.PI * 2);
 			
 			float grav = 50f;

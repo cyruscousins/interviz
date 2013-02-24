@@ -88,12 +88,12 @@ public class VisualizationFrame extends JFrame{
 				int i = x + y * width;
 				
 				int mul = 2;
-				int div = 4;
+				int div = 6;
 				
 				imgInt[i] = 
-						((((0x0000ff & imgInt[i - 1]) + (0x0000ff & imgInt[i - width]) + (0x0000ff & imgInt[i]) * mul) >>  0) / div) <<  0 |
-						((((0x00ff00 & imgInt[i - 1]) + (0x00ff00 & imgInt[i - width]) + (0x00ff00 & imgInt[i]) * mul) >>  8) / div) <<  8 | 
-						((((0xff0000 & imgInt[i - 1]) + (0xff0000 & imgInt[i - width]) + (0xff0000 & imgInt[i]) * mul) >> 16) / div) << 16
+						((((0x0000ff & imgInt[i - 1]) + (0x0000ff & imgInt[i + 1]) + (0x0000ff & imgInt[i - width]) + (0x0000ff & imgInt[i + width]) + (0x0000ff & imgInt[i]) * mul) >>  0) / div) <<  0 |
+						((((0x00ff00 & imgInt[i - 1]) + (0x00ff00 & imgInt[i + 1]) + (0x00ff00 & imgInt[i - width]) + (0x00ff00 & imgInt[i + width]) + (0x00ff00 & imgInt[i]) * mul) >>  8) / div) <<  8 | 
+						((((0xff0000 & imgInt[i - 1]) + (0xff0000 & imgInt[i - 1]) + (0xff0000 & imgInt[i - width]) + (0xff0000 & imgInt[i + width]) + (0xff0000 & imgInt[i]) * mul) >> 16) / div) << 16
 						;
 			}
 		}

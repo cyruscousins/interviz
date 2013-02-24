@@ -17,15 +17,21 @@ public abstract class Visualization {
 	public abstract void update(float t, float amtScalar);
 	
 	public void updateParticles(float dt){
+		
+		float drag = (float)(Math.pow(.75f, dt));
+		
 		int len = particles.size();
 		for(int i = 0; i < len; i++){
 			Particle p = particles.get(i);
 
-//			p.dx += noise.dydx(p.x, p.y) * dt;
-//			p.dy += (noise.dydz(p.x, p.y)) * dt;
+			p.dx += parent.noise.dydx(p.x, p.y) * 64 * dt / p.mass;
+			p.dy += parent.noise.dydz(p.x, p.y) * 64 * dt / p.mass;
 			
 			//Push away from bottom edge
-			p.dy -= ((p.y / parent.frame.height) * (p.y / parent.frame.height) * 128) * dt;
+			p.dy -= ((p.y / parent.frame.height) * (p.y / parent.frame.height) * 32) * dt;
+			
+			p.dx *= drag;
+			p.dy *= drag;
 			
 			if(p.update(dt)){ //if dead
 				len--;
