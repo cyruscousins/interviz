@@ -18,7 +18,7 @@ public class VisualizationFrame extends JFrame{
 	public BufferedImage buffer;
 	public int[] imgInt;
 	public Graphics frameG, bufferG;
-	int width, height;
+	public int width, height;
 	int xo = 5, yo = 25; //offsets
 	public VisualizationFrame(int width, int height, MouseMotionListener listener){
 		frame = new Frame();

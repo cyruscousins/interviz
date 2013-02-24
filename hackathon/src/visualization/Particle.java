@@ -1,4 +1,4 @@
-package core;
+package visualization;
 
 import java.awt.Color;
 import java.awt.Graphics;

@@ -2,6 +2,9 @@ package core;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+
+import visualization.VisualizationManager;
+
 import com.echonest.api.v4.EchoNestAPI;
 import com.echonest.api.v4.Track;
 
@@ -32,7 +35,7 @@ public class Main {
 	public static void main(String[] args){
 		VisualizationFrame frame = new VisualizationFrame(800, 600, null);
 		
-		Visualization vis = new Visualization(frame);
+		VisualizationManager vis = new VisualizationManager(frame);
 
 		frame.init();
 		final JFileChooser fc = new JFileChooser();
