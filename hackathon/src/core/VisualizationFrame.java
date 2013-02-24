@@ -4,7 +4,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.*;
-import java.awt.Image;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import java.awt.event.WindowAdapter;
@@ -13,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 public class VisualizationFrame extends JFrame{
+	private static final long serialVersionUID = 1L;
 	//manage a buffered frame
 	public Frame frame;
 	public BufferedImage buffer;
