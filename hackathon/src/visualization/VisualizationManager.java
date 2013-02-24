@@ -33,7 +33,8 @@ public class VisualizationManager {
 		
 		visualizations.add(new CenterVisualization(this));
 		visualizations.add(new PitchClassEmitter(this));
-//		visualizations.add(new Accentuator(this));
+		visualizations.add(new Accentuator(this));
+		visualizations.add(new AcceloVisualizer(this));
 		
 	}
 	
@@ -66,7 +67,22 @@ public class VisualizationManager {
 				System.out.println("SONG FINISHED!");
 			}
 			else seg = segments.get(currentSegmentIndex);
-			//System.out.println("NEW SEGMENT");
+			
+		}
+		
+		TimedEvent beat = beats.get(currentBeatIndex);
+
+		boolean newBeat = false;
+		while(time - beatT0 > beat.getDuration()){
+			beatT0 += beat.getDuration();
+			currentSegmentIndex++;
+			if(currentSegmentIndex >= segments.size()){
+				System.out.println("SONG FINISHED!");
+			}
+			else seg = segments.get(currentSegmentIndex);
+			System.out.println("BEAT");
+			
+			newBeat = true;
 		}
 		
 		relativeLoudness = interpolate(interpAmt, relativeLoudness, (float)(seg.getLoudnessMax() / tLoudness));
@@ -86,17 +102,17 @@ public class VisualizationManager {
 		colB = (int)interpolate(interpAmt, colB, (float)(timbres[2] + 1) * 127);
 		
 		for(int i = 0; i < visualizations.size(); i++){
-			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .25f + .75f) * .5f);
+			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .5f + .5f) * (newBeat ? 2 : 1));
 		}
 	}
 	
 	Track track;
 	TrackAnalysis analysis;
 	
-	List<TimedEvent> tatums;
+	List<TimedEvent> beats;
 	List<Segment> segments;
-	int currentSegmentIndex;
-	float segT0;
+	int currentSegmentIndex, currentBeatIndex;
+	float segT0, beatT0;
 	
 	float tLoudness;
 	
@@ -106,9 +122,10 @@ public class VisualizationManager {
 		tLoudness = (float)track.getLoudness();
 		
 		analysis = track.getAnalysis();
-		
-		tatums = analysis.getTatums();
+
+		beats = analysis.getBeats();
 		segments = analysis.getSegments();
+		
 		currentSegmentIndex = 0;
 		segT0 = time;
 	}

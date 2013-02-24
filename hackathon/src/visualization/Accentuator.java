@@ -43,9 +43,11 @@ public class Accentuator extends Visualization{
 			for(int i = 0; i < timbre.length; i++){
 				dist += Math.abs(oTim[i] - timbre[i]);
 			}
+			
+			dist /= 620; //normalize it.
 		}
 		
-		if(dist > 4){
+		if(dist > 1){
 			if(!on){
 				x = parent.rand.nextFloat() * parent.frame.width;
 				y = parent.rand.nextFloat() * parent.frame.height;
@@ -60,14 +62,15 @@ public class Accentuator extends Visualization{
 				
 				on = true;
 			}
+
 			//emit
-			float rawEmit = dist * 40 * dt * emitFrac;
+			float rawEmit = dist * 20 * dt * emitFrac;
 			int emissions = (int)rawEmit + (parent.rand.nextFloat() < (rawEmit - (int)rawEmit) ? 1 : 0);
 			for(int i = 0; i < emissions; i++){
 				float tTheta = (float)(parent.rand.nextFloat() * Math.PI * 2);
-				float tRad = parent.rand.nextFloat() * 2;
+				float tRad = parent.rand.nextFloat() * 20;
 				
-				Polynomial radius = new Polynomial(new float[]{1, 2, -1});
+				Polynomial radius = new Polynomial(new float[]{1, 2, -1.5f + .5f * parent.rand.nextFloat()});
 				Particle p = new Particle(x, y, dx + (float)(Math.cos(tTheta)) * tRad, dy + (float)(Math.sin(tTheta)) * tRad, d2x, d2y, 4, radius, parent.colR, parent.colG, parent.colB);
 				particles.add(p);
 				
