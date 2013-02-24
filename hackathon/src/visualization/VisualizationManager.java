@@ -2,6 +2,9 @@ package visualization;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +22,10 @@ import core.VisualizationFrame;
 import math.F2Var;
 import math.Polynomial;
 
-public class VisualizationManager {
+public class VisualizationManager implements MouseMotionListener, MouseListener{
+	float mouseX, mouseY;
+	public float mouseClickTime;
+	
 	VisualizationFrame frame;
 	
 	
@@ -39,6 +45,8 @@ public class VisualizationManager {
 		//visualizations.add(new BeatPulser(this));
 		//visualizations.add(new BeatPulser(this));
 		
+		frame.frame.addMouseMotionListener(this);
+		frame.frame.addMouseListener(this);
 	}
 	
 	public float time;
@@ -63,6 +71,11 @@ public class VisualizationManager {
 			return;
 		}
 		this.time += dt;
+		
+		mouseClickTime -= dt;
+		if(mouseClickTime < 0){
+			mouseClickTime = 0;
+		}
 		
 		float interpAmt = (float)Math.pow(.1f, dt);
 		
@@ -151,7 +164,7 @@ public class VisualizationManager {
 				return;
 			}
 			else seg = segments.get(currentBeatIndex);
-			System.out.println("BEAT");
+//			System.out.println("BEAT");
 			
 			newBeat = true;
 		}
@@ -219,5 +232,45 @@ public class VisualizationManager {
 	
 	public float interpolate(float interp, float a, float b){
 		return a * interp + (1 - interp) * b;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		mouseX = arg0.getX();
+		mouseY = arg0.getY();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		mouseClickTime = 1f;
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

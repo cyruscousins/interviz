@@ -20,15 +20,14 @@ public class VisualizationFrame extends JFrame{
 	public Graphics frameG, bufferG;
 	public int width, height;
 	int xo = 5, yo = 25; //offsets
-	public VisualizationFrame(int width, int height, MouseMotionListener listener){
+	public VisualizationFrame(int width, int height){
 		frame = new Frame();
+		
 		this.frame.addWindowListener(new WindowAdapter() {
 		    public void windowClosing(WindowEvent e) {
 		         System.exit(0);
 		    }
 		});
-		
-		addMouseMotionListener(listener);
 		
 		this.width = width;
 		this.height = height;

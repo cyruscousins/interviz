@@ -28,11 +28,12 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
-		VisualizationFrame frame = new VisualizationFrame(800, 600, null);
+		VisualizationFrame frame = new VisualizationFrame(800, 600);
 		
 		VisualizationManager vis = new VisualizationManager(frame);
 
 		frame.init();
+		
 		final JFileChooser fc = new JFileChooser();
 		fc.showOpenDialog(frame);
 		File songFile = fc.getSelectedFile();
