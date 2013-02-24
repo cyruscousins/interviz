@@ -51,15 +51,24 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+
+		long t0 = System.currentTimeMillis();
 		for(int i = 0; i < 100000; i++){
-			float time = .015f;
+			float time = .02f;
 			vis.update(time);
-			try{
-				Thread.sleep((int)(1000 * time));
+			
+			long t1 = System.currentTimeMillis();
+			
+			if(t1 - t0 < time * 1000){
+				try{
+					Thread.sleep((int)(time * 1000 - (t1 - t0)));
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
 			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
+			
+			t0 = System.currentTimeMillis();
 			vis.render();
 		}
 	}
