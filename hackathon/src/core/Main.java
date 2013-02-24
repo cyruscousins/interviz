@@ -1,20 +1,24 @@
 package core;
 
+import java.awt.GridLayout;
+import java.awt.TextArea;
 import java.io.File;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import com.echonest.api.v4.EchoNestAPI;
-import com.echonest.api.v4.EchoNestException;
-import com.echonest.api.v4.TimedEvent;
 import com.echonest.api.v4.Track;
-import com.echonest.api.v4.Track.AnalysisStatus;
 import com.echonest.api.v4.TrackAnalysis;
-import com.sun.xml.internal.ws.api.addressing.WSEndpointReference.Metadata;
 
 
 public class Main {
-
+	
 	private static TrackAnalysis retrieveAnalysis(File songName){
 		EchoNestAPI enApi = null;
 		try {
@@ -38,18 +42,18 @@ public class Main {
 	}
 	
 	public static void main(String[] args){
-		
 		VisualizationFrame frame = new VisualizationFrame(800, 600, null);
 		
 		Visualization vis = new Visualization(frame);
 
 		frame.init();
-		
 		final JFileChooser fc = new JFileChooser();
+		fc.setMultiSelectionEnabled(true);
 		fc.showOpenDialog(frame);
-		File song = fc.getSelectedFile();
-		if(song != null){
-			TrackAnalysis analysis = retrieveAnalysis(song);
+		File[] songs = fc.getSelectedFiles();
+		TrackAnalysis analysis = null;
+		if(songs.length > 0){
+			analysis = retrieveAnalysis(songs[0]);
 		}
 		for(int i = 0; i < 100000; i++){
 			float time = .01f;
