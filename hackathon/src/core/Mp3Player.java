@@ -9,21 +9,37 @@ import javax.sound.sampled.DataLine;
 import java.io.File;
 
 public class Mp3Player {
-	public static synchronized void playSound(final File soundFile) {
-		new Thread(new Runnable() { // the wrapper thread is unnecessary, unless it blocks on the Clip finishing, see comments
-			public void run() {
-				try {
-					AudioInputStream inputStream = AudioSystem.getAudioInputStream(soundFile);
-					AudioFormat format = inputStream.getFormat();
-					DataLine.Info info = new DataLine.Info(Clip.class, format);
-					Clip clip = (Clip)AudioSystem.getLine(info);
-			        clip.open(inputStream);
-			        clip.start();
-				} catch (Exception e) {
-					System.err.println(e.toString());
-					e.printStackTrace();
-				}
-			}
-		}).start();
+	private Clip clip;
+	boolean hasStartedRunning;
+	
+	public Mp3Player(File soundFile) {
+		try {
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(soundFile);
+			AudioFormat format = inputStream.getFormat();
+			DataLine.Info info = new DataLine.Info(Clip.class, format);
+			clip = (Clip)AudioSystem.getLine(info);
+	        clip.open(inputStream);
+	        hasStartedRunning = false;
+		} catch (Exception e) {
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+	}
+	
+	public void playSound() {
+		clip.start();
+	}
+	
+	public long getMillisecondsTime() {
+		return clip.getMicrosecondPosition()/1000;
+	}
+	
+	public boolean isDonePlaying() {
+		boolean isRunning = clip.isRunning();
+		if(!hasStartedRunning && isRunning) {
+			hasStartedRunning = true;
+		}
+		return !hasStartedRunning || clip.isRunning();
+		//return clip.isRunning();
 	}
 }
