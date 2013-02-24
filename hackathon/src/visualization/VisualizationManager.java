@@ -89,7 +89,7 @@ public class VisualizationManager {
 		float countTemp = relativeLoudness * relativeLoudness * dt * 20;
 		
 		for(int i = 0; i < visualizations.size(); i++){
-			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .25f + .75f));
+			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .25f + .75f) * .5f);
 		}
 	}
 	

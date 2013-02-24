@@ -10,29 +10,39 @@ public class Accentuator extends Visualization{
 
 	public Accentuator(VisualizationManager parent){
 		super(parent);
-
-		Segment seg = parent.segments.get(parent.currentSegmentIndex);
-		oVol = (float) seg.getLoudnessMax();
-		oTim = seg.getTimbre();
 	}
 	
 	float oVol;
 	double[] oTim;
+	
+	int oSeg;
+	
+	float dist;
 	
 	boolean on;
 	float x, y;
 	float dx, dy;
 	float d2x, d2y;
 	
+	
+	
 	public void update(float dt, float emitFrac){
 		Segment seg = parent.segments.get(parent.currentSegmentIndex);
 		
-		float vol = (float)  seg.getLoudnessMax();
-		double[] timbre = seg.getTimbre();
-		
-		float dist = Math.abs(vol - oVol);
-		for(int i = 0; i < timbre.length; i++){
-			dist += Math.abs(oTim[i] - timbre[i]);
+		int curSeg = parent.currentSegmentIndex;
+		if(curSeg != oSeg){
+			if(oTim == null){
+				oVol = (float) seg.getLoudnessMax();
+				oTim = seg.getTimbre();
+			}
+			
+			float vol = (float)  seg.getLoudnessMax();
+			double[] timbre = seg.getTimbre();
+			
+			dist = Math.abs(vol - oVol);
+			for(int i = 0; i < timbre.length; i++){
+				dist += Math.abs(oTim[i] - timbre[i]);
+			}
 		}
 		
 		if(dist > 4){
@@ -54,8 +64,11 @@ public class Accentuator extends Visualization{
 			float rawEmit = dist * 100 * dt * emitFrac;
 			int emissions = (int)rawEmit + (parent.rand.nextFloat() < (rawEmit - (int)rawEmit) ? 1 : 0);
 			for(int i = 0; i < emissions; i++){
+				float tTheta = (float)(parent.rand.nextFloat() * Math.PI * 2);
+				float tRad = parent.rand.nextFloat() * 2;
+				
 				Polynomial radius = new Polynomial(new float[]{1, 2, -1});
-				Particle p = new Particle(x, y, dx, dy, d2x, d2y, 4, radius, parent.colR, parent.colG, parent.colB);
+				Particle p = new Particle(x, y, dx + (float)(Math.cos(tTheta)) * tRad, dy + (float)(Math.sin(tTheta)) * tRad, d2x, d2y, 4, radius, parent.colR, parent.colG, parent.colB);
 				particles.add(p);
 				
 			}
