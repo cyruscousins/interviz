@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+
+import com.echonest.api.v4.Segment;
+import com.echonest.api.v4.TrackAnalysis;
 
 import math.F2Var;
 import math.Polynomial;
@@ -24,31 +28,60 @@ public class Visualization {
 	}
 	
 	float time;
-	float emitterTheta;
+	float emitterTheta, emitterR;
 	
 	Random rand = new Random();
-	public void update(float t){
-		this.time += t;
+	public void update(float dt){
+		this.time += dt;
 		
-		float tempoNow = 120;
+
+		float tempoNow;
+		int sourceX, sourceY;
 		
-		emitterTheta += (float)(t * tempoNow / 60 * (2 * Math.PI) * .125f);
+		int colR, colG, colB;
 		
-		float rad = 64;
+		if(segments == null){
+			
+			tempoNow = 120;
 		
-		int sourceX = (int)(frame.width / 2 + (Math.cos(emitterTheta) * rad));
-		int sourceY = (int)(frame.height / 2 + (Math.sin(emitterTheta) * rad));
+			emitterTheta += (float)(dt * tempoNow / 60 * (2 * Math.PI) * .125f);
+			
+			emitterR = 64;
+			
+			float colSpeed = .5f;
+			colR = (int)(100 + 50 * Math.sin(time * colSpeed));
+			colG = (int)(100 + 50 * Math.cos(time * colSpeed));
+			colB = (int)(100 - 50 * Math.sin(time * colSpeed));
+
+		}
+		else{
+			Segment seg = segments.get(currentSegmentIndex);
+			
+			while(time - segT0 > seg.getDuration()){
+				segT0 += seg.getDuration();
+				currentSegmentIndex++;
+				if(currentSegmentIndex >= segments.size()){
+					System.out.println("SONG FINISHED!");
+				}
+				else seg = segments.get(currentSegmentIndex);
+			}
+			
+			emitterTheta += dt * seg.getLoudnessMax();
+			emitterR = (float)(32 * seg.getLoudnessMax());
+
+			colR = (int)(seg.getConfidence() * 255);
+			colG = (int)(seg.getLoudnessMax() * 255);
+			colB = (int)(seg.getLoudnessMaxTime() * 255);
+		}
 		
-		float colSpeed = .5f;
-		int colR = (int)(100 + 50 * Math.sin(time * colSpeed));
-		int colG = (int)(100 + 50 * Math.cos(time * colSpeed));
-		int colB = (int)(100 - 50 * Math.sin(time * colSpeed));
+		sourceX = (int)(frame.width / 2 + (Math.cos(emitterTheta) * emitterR));
+		sourceY = (int)(frame.height / 2 + (Math.sin(emitterTheta) * emitterR));
 		
-		for(int i = 0; i < 1; i++){
-			float vel = (float)(10 * Math.random());
+		for(int i = 0; i < 4; i++){
+			float vel = (float)(50 * Math.random());
 			float theta = (float)(Math.random() * Math.PI * 2);
 			
-			float grav = 1;
+			float grav = 100f;
 //			float gravDir = (float)(Math.random() * Math.PI * 2);
 
 			float gravDir = (float)(Math.PI * 1 / 2);
@@ -56,8 +89,8 @@ public class Visualization {
 			float dx = (float)(vel * Math.cos(theta));
 			float dy = (float)(vel * Math.sin(theta));
 			
-			Polynomial d2x = new Polynomial(new float[]{(float)(grav * Math.cos(gravDir))});
-			Polynomial d2y = new Polynomial(new float[]{(float)(grav * Math.sin(gravDir))});
+			float d2x = (float)(grav * Math.cos(gravDir));
+			float d2y = (float)(grav * Math.sin(gravDir));
 			
 //			Polynomial dx = new Polynomial(new float[]{(float)(vel * Math.cos(theta)), (float)(grav * Math.cos(gravDir)), -.05f, .025f, -.0125f});
 //			Polynomial dy = new Polynomial(new float[]{(float)(vel * Math.sin(theta)), (float)(grav * Math.sin(gravDir)), -.05f, .025f, -.0125f});
@@ -73,20 +106,32 @@ public class Visualization {
 		
 		for(Particle p : particles){
 			
-//			p.dx += noise.dydx(p.x, p.y);
-//			p.dy += noise.dydz(p.x, p.y);
+			p.dx += noise.dydx(p.x, p.y) * dt;
+			p.dy += (noise.dydz(p.x, p.y)) * dt;
 			
-			p.update(.02f);
+			p.dy -= ((p.y / frame.height) * (p.y / frame.height) * 128) * dt;
+			
+			p.update(dt);
 			if(p.rad < 0) trash.add(p);
 		}
+		
 		for(Particle p : trash){
 			particles.remove(p);
 		}
 	}
 	
+	List<Segment> segments;
+	int currentSegmentIndex;
+	float segT0;
+	public void setTrackAnalysis(TrackAnalysis analysis){
+		segments = analysis.getSegments();
+		currentSegmentIndex = 0;
+		segT0 = time;
+	}
+	
 	public void render(){
 		Graphics g = frame.bufferG;
-		g.setColor(new Color(0, 0, 0, 10));
+		g.setColor(new Color(0, 0, 0, 12));
 		g.fillRect(0, 0, frame.width, frame.height);
 		
 		for(Particle particle : particles){
