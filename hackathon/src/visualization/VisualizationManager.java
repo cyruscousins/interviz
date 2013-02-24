@@ -66,7 +66,7 @@ public class VisualizationManager {
 				System.out.println("SONG FINISHED!");
 			}
 			else seg = segments.get(currentSegmentIndex);
-			System.out.println("NEW SEGMENT");
+			//System.out.println("NEW SEGMENT");
 		}
 		
 		relativeLoudness = interpolate(interpAmt, relativeLoudness, (float)(seg.getLoudnessMax() / tLoudness));
