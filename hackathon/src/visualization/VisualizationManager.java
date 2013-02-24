@@ -34,10 +34,10 @@ public class VisualizationManager {
 		visualizations.add(new CenterVisualization(this));
 		visualizations.add(new PitchClassEmitter(this));
 		visualizations.add(new Accentuator(this));
-		visualizations.add(new CenterVisualizationPitchClass(this));
+		//visualizations.add(new CenterVisualizationPitchClass(this));
 //		visualizations.add(new AcceloVisualizer(this));
-		visualizations.add(new BeatPulser(this));
-		visualizations.add(new BeatPulser(this));
+		//visualizations.add(new BeatPulser(this));
+		//visualizations.add(new BeatPulser(this));
 		
 	}
 	
@@ -58,6 +58,8 @@ public class VisualizationManager {
 	boolean newBeat = false;
 	
 	public void update(float dt){
+		if(currentSegmentIndex >= segments.size() || currentBeatIndex >= beats.size())
+			return;
 		this.time += dt;
 		
 		float interpAmt = (float)Math.pow(.1f, dt);
@@ -69,7 +71,8 @@ public class VisualizationManager {
 			segT0 += seg.getDuration();
 			currentSegmentIndex++;
 			if(currentSegmentIndex >= segments.size()){
-				System.out.println("SONG FINISHED!");
+				System.out.println("SONG FINISHED (segments)!");
+				return;
 			}
 			else seg = segments.get(currentSegmentIndex);
 			
@@ -81,11 +84,12 @@ public class VisualizationManager {
 		
 		while(time - beatT0 > beat.getDuration()){
 			beatT0 += beat.getDuration();
-			currentSegmentIndex++;
-			if(currentSegmentIndex >= segments.size()){
-				System.out.println("SONG FINISHED!");
+			currentBeatIndex++;
+			if(currentBeatIndex >= segments.size()){
+				System.out.println("SONG FINISHED (beats)!");
+				return;
 			}
-			else seg = segments.get(currentSegmentIndex);
+			else seg = segments.get(currentBeatIndex);
 			System.out.println("BEAT");
 			
 			newBeat = true;
