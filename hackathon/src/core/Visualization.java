@@ -76,7 +76,7 @@ public class Visualization {
 			
 			float relativeLoudness = (float)(seg.getLoudnessMax() / tLoudness);
 			
-			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
+//			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
 			
 			tempoNow = 120; //TODO
 			
@@ -93,6 +93,8 @@ public class Visualization {
 			float countTemp = relativeLoudness * dt * 100;
 			newSegCount = (int) countTemp + (rand.nextFloat() < (countTemp - (int) countTemp) ? 1 : 0);
 
+			if(rand.nextFloat() > .75f) System.out.println("NEWSEGS: " + newSegCount);
+			
 			double[] pitches = seg.getPitches();
 			
 			for(int i = 0; i < pitches.length; i++){
@@ -114,6 +116,7 @@ public class Visualization {
 					float MASS = 3;
 					
 					Particle p = new Particle(x, y, dx, dy, d2x, d2y, MASS, radius, colR, colG, colB);
+					particles.add(p);
 				}
 			}
 		}
@@ -139,7 +142,7 @@ public class Visualization {
 //			Polynomial dx = new Polynomial(new float[]{(float)(vel * Math.cos(theta)), (float)(grav * Math.cos(gravDir)), -.05f, .025f, -.0125f});
 //			Polynomial dy = new Polynomial(new float[]{(float)(vel * Math.sin(theta)), (float)(grav * Math.sin(gravDir)), -.05f, .025f, -.0125f});
 			
-			Polynomial radius = new Polynomial(new float[]{2, .3f, -.2f});
+			Polynomial radius = new Polynomial(new float[]{1.5f, .3f, -.225f});
 
 			Particle p = new Particle(sourceX, sourceY, dx, dy, d2x, d2y, 1, radius, colR, colG, colB);
 			p.update(.2f);
