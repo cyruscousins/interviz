@@ -34,7 +34,10 @@ public class VisualizationManager {
 		visualizations.add(new CenterVisualization(this));
 		visualizations.add(new PitchClassEmitter(this));
 		visualizations.add(new Accentuator(this));
-		//visualizations.add(new AcceloVisualizer(this));
+		visualizations.add(new CenterVisualizationPitchClass(this));
+//		visualizations.add(new AcceloVisualizer(this));
+		visualizations.add(new BeatPulser(this));
+		visualizations.add(new BeatPulser(this));
 		
 	}
 	
@@ -51,6 +54,8 @@ public class VisualizationManager {
 	
 	
 	Random rand = new Random();
+
+	boolean newBeat = false;
 	
 	public void update(float dt){
 		this.time += dt;
@@ -72,7 +77,8 @@ public class VisualizationManager {
 		
 		TimedEvent beat = beats.get(currentBeatIndex);
 
-		boolean newBeat = false;
+		newBeat = false;
+		
 		while(time - beatT0 > beat.getDuration()){
 			beatT0 += beat.getDuration();
 			currentSegmentIndex++;
@@ -90,7 +96,7 @@ public class VisualizationManager {
 		
 //			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
 		
-		tempoNow = 120; //TODO
+		tempoNow = tempoNow; //TODO
 		
 		emitterTheta += dt * tempoNow / 60;
 		emitterR = (float)(50 * relativeLoudness);
@@ -114,12 +120,14 @@ public class VisualizationManager {
 	int currentSegmentIndex, currentBeatIndex;
 	float segT0, beatT0;
 	
-	float tLoudness;
+	float tLoudness, liveness;
 	
 	public void setTrack(Track track) throws EchoNestException{
 		this.track = track;
 		
 		tLoudness = (float)track.getLoudness();
+		
+		liveness = (float)(track.getLoudness() + 1) * .5f;
 		
 		analysis = track.getAnalysis();
 
@@ -128,6 +136,8 @@ public class VisualizationManager {
 		
 		currentSegmentIndex = 0;
 		segT0 = time;
+		
+		tempoNow = (float)track.getTempo();
 	}
 	
 	public void render(){
@@ -138,6 +148,7 @@ public class VisualizationManager {
 		for(Visualization vis : visualizations){
 			vis.render(g);
 		}
+		
 		frame.drawToScreen();
 	}
 	

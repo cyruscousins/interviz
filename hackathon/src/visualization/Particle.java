@@ -69,7 +69,7 @@ public class Particle {
 				lim((int)(Math.sin(time + x * psclr) * dIntens) + br, 0, 255), 
 				lim((int)(Math.sin(time + y * psclr) * dIntens) + bg, 0, 255), 
 				lim((int)(Math.sin(time + (x + y) * psclr) * dIntens) + bb, 0, 255),
-				200);
+				100);
 	}
 	
 	int lim(int i, int a, int b){

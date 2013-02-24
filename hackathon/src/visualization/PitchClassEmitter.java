@@ -28,23 +28,30 @@ public class PitchClassEmitter extends Visualization{
 			if(pitches[i] * pitches[i] > rand.nextDouble() + .25f){
 				
 				float x = 32;
-				float y = (40 * (1 + i) + time * 12) % parent.frame.height;
+				float y = (40 * (1 + i) + time * 50) % parent.frame.height;
 				
-				float dx = (float)(pitches[i]) * 50;
+				float theta = (float)(rand.nextFloat() * Math.PI * 2);
+				float r = rand.nextFloat() * 32 + (parent.newBeat ?  16 : 0);
+				
+				
+				float dx = (float)(pitches[i]) * 100;
 				float dy = -rand.nextFloat() * 5f;
 				
-				float d2x = rand.nextFloat();
+				float d2x = rand.nextFloat() * 25;
 				float d2y = 20; //GRAV
 
 				Polynomial radius = new Polynomial(new float[]{(float)pitches[i] + 2, .125f + (float)pitches[i] * .125f, -.25f + rand.nextFloat() * .125f});
 				
 				float MASS = 3;
 				
-				Particle p = new Particle(x, y, dx, dy, d2x, d2y, MASS, radius, parent.colR, parent.colG, parent.colB);
+				Particle p = new Particle(x, y, dx + (float)(Math.cos(theta) * r), dy + (float)(Math.sin(theta) * r), d2x, d2y, MASS, radius, parent.colR, parent.colG, parent.colB);
 				particles.add(p);
 				
 				if(bothSides){
-					p = new Particle(parent.frame.width - x, y, -dx, dy, -d2x, d2y, MASS, radius, parent.colR, parent.colG, parent.colB);
+					theta = (float)(rand.nextFloat() * Math.PI * 2);
+					r = rand.nextFloat() * 32 + (parent.newBeat ?  16 : 0);
+					
+					p = new Particle(x, y, dx + (float)(Math.cos(theta) * r), dy + (float)(Math.sin(theta) * r), d2x, d2y, MASS, radius, parent.colR, parent.colG, parent.colB);
 					particles.add(p);
 				}
 			}
