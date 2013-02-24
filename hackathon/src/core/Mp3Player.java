@@ -30,8 +30,8 @@ public class Mp3Player {
 		clip.start();
 	}
 	
-	public long getMillisecondsTime() {
-		return clip.getMicrosecondPosition()/1000;
+	public long getMicrosecondsTime() {
+		return clip.getMicrosecondPosition();
 	}
 	
 	public boolean isDonePlaying() {

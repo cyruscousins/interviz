@@ -60,11 +60,11 @@ public class Main {
 		long t0 = 0;
 		long t1 = 0;
 		while(songPlayer.isDonePlaying()) {
-			t0 = songPlayer.getMillisecondsTime();
+			t0 = songPlayer.getMicrosecondsTime();
 			System.out.println(t0-t1);
-			vis.update((t0 - t1)/1000.0f);
+			vis.update((t0 - t1)/1000000.0f);
 			
-			t1 = songPlayer.getMillisecondsTime();
+			t1 = songPlayer.getMicrosecondsTime();
 			
 			vis.render();
 		}
