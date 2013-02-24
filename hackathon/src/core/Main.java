@@ -37,10 +37,6 @@ public class Main {
 		fc.setMultiSelectionEnabled(true);
 		fc.showOpenDialog(frame);
 		File[] songs = fc.getSelectedFiles();
-		if(songs[0].getName().endsWith("wav")) {
-			System.out.println("Going to play the song");
-			Mp3Player.playSound(songs[0]);
-		}
 		Track track = null;
 		if(songs.length > 0){
 			track = retrieveTrack(songs[0]);
@@ -51,25 +47,35 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+		Mp3Player songPlayer = null;
+		if(songs[0].getName().endsWith("wav")) {
+			System.out.println("Going to play the song");
+			songPlayer = new Mp3Player(songs[0]);
+		} else {
+			System.err.println("I can't play this file!");
+			System.exit(1);
+		}
 
-		long t0 = System.currentTimeMillis();
-		for(int i = 0; i < 100000; i++){
-			float time = .02f;
-			vis.update(time);
+		songPlayer.playSound();
+		long t0 = songPlayer.getMillisecondsTime();
+		while(songPlayer.isDonePlaying()) {
+			final float secondsPerTick = .02f;
+			vis.update(secondsPerTick);
 			
-			long t1 = System.currentTimeMillis();
+			long t1 = songPlayer.getMillisecondsTime();
 			
-			if(t1 - t0 < time * 1000){
+			if(t1 - t0 < secondsPerTick * 1000){
 				try{
-					Thread.sleep((int)(time * 1000 - (t1 - t0)));
+					Thread.sleep((int)(secondsPerTick * 1000 - (t1 - t0)));
 				}
 				catch(Exception e){
 					e.printStackTrace();
 				}
 			}
 			
-			t0 = System.currentTimeMillis();
+			t0 = songPlayer.getMillisecondsTime();
 			vis.render();
 		}
+		System.out.println("I'm done");
 	}
 }
