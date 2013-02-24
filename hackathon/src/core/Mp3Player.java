@@ -35,11 +35,10 @@ public class Mp3Player {
 	}
 	
 	public boolean isDonePlaying() {
-		boolean isRunning = clip.isRunning();
+		boolean isRunning = clip.isRunning() || clip.isActive();
 		if(!hasStartedRunning && isRunning) {
 			hasStartedRunning = true;
 		}
-		return !hasStartedRunning || clip.isRunning();
-		//return clip.isRunning();
+		return hasStartedRunning && !isRunning;
 	}
 }

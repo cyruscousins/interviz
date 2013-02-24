@@ -48,8 +48,7 @@ public class Main {
 			System.err.println("Invalid file extension. Only wav and mp3 allowed");
 			System.exit(1);
 		}
-		Track track = null;
-		track = retrieveTrack(mp3file);
+		Track track = retrieveTrack(mp3file);
 		try{
 			vis.setTrack(track);
 		}
@@ -63,9 +62,8 @@ public class Main {
 		songPlayer.playSound();
 		long t0 = 0;
 		long t1 = 0;
-		while(songPlayer.isDonePlaying()) {
+		while(!songPlayer.isDonePlaying()) {
 			t0 = songPlayer.getMicrosecondsTime();
-			System.out.println(t0-t1);
 			vis.update((t0 - t1)/1000000.0f);
 			
 			t1 = songPlayer.getMicrosecondsTime();
