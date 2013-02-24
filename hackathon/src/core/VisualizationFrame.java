@@ -41,8 +41,10 @@ public class VisualizationFrame extends JFrame{
 		frame.setSize(width + xo * 2, height + xo + yo);
 		frame.setVisible(true);
 		frameG = frame.getGraphics();
+		blurColumnOffset = 1;
 	}
 	public void drawToScreen(){
+		//blurScreen(0.5f, 0, 0.5f, 0);
 		frameG.drawImage(buffer, xo, yo, null);
 	}
 	public void takeScreenShot(String name){
@@ -52,5 +54,29 @@ public class VisualizationFrame extends JFrame{
 		} catch(Exception e){
 			System.out.println("Error taking screenshot.");
 		}
+	}
+	int blurColumnOffset;
+	public void blurScreen(float leftWeight, float rightWeight, float topWeight, float bottomWeight) {
+		float totalWeight = 1 + leftWeight + rightWeight + topWeight + bottomWeight;
+		assert(totalWeight > 0);
+		for(int r=1; r<height-1; r++) {
+			for(int c=blurColumnOffset + (r % 2); c<width-1; c+=2) {
+				imgInt[r*width + c] = mergePixels((int)pixel(r,c), (int)(leftWeight*pixel(r,c-1)), (int)(rightWeight*pixel(r,c+1)), (int)(topWeight*pixel(r-1,c)), (int)(bottomWeight*pixel(r+1,c)), totalWeight);
+			}
+		}
+		blurColumnOffset = blurColumnOffset == 1 ? 2 : 1;
+	}
+	private int pixel(int row, int col) {
+		return imgInt[row*width + col];
+	}
+	private int mergePixels(int p1, int p2, int p3, int p4, int p5, float denominator) {
+		int r = mergePixels(p1, p2, p3, p4, p5, denominator, 16);
+		int g = mergePixels(p1, p2, p3, p4, p5, denominator, 8);
+		int b = mergePixels(p1, p2, p3, p4, p5, denominator, 0);
+		return (r << 16) | (g << 8) | b;
+	}
+	private int mergePixels(int p1, int p2, int p3, int p4, int p5, float denominator, int bitOffset) {
+		int mask = 0xFF << bitOffset;
+		return ((int)((p1 & mask + p2 & mask + p3 & mask + p4 & mask + p5 & mask) / denominator)) >>> bitOffset;
 	}
 }

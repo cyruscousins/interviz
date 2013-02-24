@@ -11,13 +11,8 @@ import com.echonest.api.v4.Track;
 public class Main {
 	
 	private static Track retrieveTrack(File songName){
-		EchoNestAPI enApi = null;
 		try {
-			enApi = new EchoNestAPI("QGBFJRQABCWTIDEG0");
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		try {
+			EchoNestAPI enApi = new EchoNestAPI("QGBFJRQABCWTIDEG0");
             Track track = enApi.uploadTrack(songName);
             track.waitForAnalysis(30000);
             if (track.getStatus() == Track.AnalysisStatus.COMPLETE) {
