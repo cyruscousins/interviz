@@ -8,18 +8,19 @@ import math.F1Var;
 public class Particle {
 
 	float x, y;
-	float dx, dy;
+	F1Var dx, dy;
 
 	float mass;
 	
 	F1Var radius;
 	
+	float rad;
+	
 	float time;
 	
 	int br, bg, bb;
 
-	public Particle(float x, float y, float dx, float dy, float mass,
-			F1Var radius) {
+	public Particle(float x, float y, F1Var dx, F1Var dy, float mass, F1Var radius) {
 		this.x = x;
 		this.y = y;
 		this.dx = dx;
@@ -31,14 +32,14 @@ public class Particle {
 	}
 
 	public void update(float time){
-		x += dx;
-		y += dy;
+		x += dx.val(this.time);
+		y += dy.val(this.time);
 		
 		this.time += time;
 	}
 	
 	public void render(Graphics g) {
-		float rad = radius.val(time);
+		rad = radius.val(time);
 		
 		g.setColor(col(x, y, br, bg, bb));
 		g.drawOval((int)(x - rad), (int)(y - rad), (int)(rad * 2 + 1), (int)(rad * 2 + 1));

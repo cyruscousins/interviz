@@ -45,8 +45,14 @@ public class Main {
 
 		
 		for(int i = 0; i < 100000; i++){
-			vis.update();
-			
+			float time = .01f;
+			vis.update(time);
+			try{
+				Thread.sleep((int)(1000 * time));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
 			vis.render();
 		}
 		
