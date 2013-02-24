@@ -34,27 +34,31 @@ public class Main {
 
 		frame.init();
 		final JFileChooser fc = new JFileChooser();
-		fc.setMultiSelectionEnabled(true);
 		fc.showOpenDialog(frame);
-		File[] songs = fc.getSelectedFiles();
-		Track track = null;
-		if(songs.length > 0){
-			track = retrieveTrack(songs[0]);
-			try{
-				vis.setTrack(track);
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		Mp3Player songPlayer = null;
-		if(songs[0].getName().endsWith("wav")) {
-			System.out.println("Going to play the song");
-			songPlayer = new Mp3Player(songs[0]);
+		File songFile = fc.getSelectedFile();
+		String otherFileName = songFile.getPath().substring(0, songFile.getPath().lastIndexOf('.'));
+		File mp3file = null, wavfile = null;
+		if(songFile.getName().endsWith("wav")) {
+			mp3file = new File(otherFileName + ".mp3");
+			wavfile = songFile;
+		} else if(songFile.getName().endsWith("mp3")){
+			mp3file = songFile;
+			wavfile = new File(otherFileName + ".wav");
 		} else {
-			System.err.println("I can't play this file!");
+			System.err.println("Invalid file extension. Only wav and mp3 allowed");
 			System.exit(1);
 		}
+		Track track = null;
+		track = retrieveTrack(mp3file);
+		try{
+			vis.setTrack(track);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		Mp3Player songPlayer = null;
+
+		songPlayer = new Mp3Player(wavfile);
 
 		songPlayer.playSound();
 		long t0 = 0;

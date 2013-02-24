@@ -34,7 +34,7 @@ public class VisualizationManager {
 		visualizations.add(new CenterVisualization(this));
 		visualizations.add(new PitchClassEmitter(this));
 		visualizations.add(new Accentuator(this));
-		visualizations.add(new AcceloVisualizer(this));
+		//visualizations.add(new AcceloVisualizer(this));
 		
 	}
 	
