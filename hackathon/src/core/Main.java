@@ -1,21 +1,9 @@
 package core;
 
-import java.awt.GridLayout;
-import java.awt.TextArea;
 import java.io.File;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-
 import com.echonest.api.v4.EchoNestAPI;
 import com.echonest.api.v4.Track;
-import com.echonest.api.v4.TrackAnalysis;
-
 
 public class Main {
 	
