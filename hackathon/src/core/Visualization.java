@@ -101,7 +101,7 @@ public class Visualization {
 				if(pitches[i] * pitches[i] > rand.nextDouble() + .25f){
 					
 					float x = 32;
-					float y = 50 * (2 + i);
+					float y = 40 * (1 + i);
 					
 					y *= rand.nextInt(2) + 1;
 					
@@ -111,7 +111,7 @@ public class Visualization {
 					float d2x = rand.nextFloat();
 					float d2y = 20; //GRAV
 
-					Polynomial radius = new Polynomial(new float[]{2, .3f, -.225f, .1f, -.075f});
+					Polynomial radius = new Polynomial(new float[]{(float)pitches[i] + 2, .3f, -.225f, .1f, -.075f});
 					
 					float MASS = 3;
 					
