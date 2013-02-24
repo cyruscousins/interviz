@@ -8,7 +8,10 @@ import math.F1Var;
 public class Particle {
 
 	float x, y;
-	F1Var dx, dy;
+	
+	float dx, dy;
+	
+	F1Var d2x, d2y;
 
 	float mass;
 	
@@ -20,20 +23,30 @@ public class Particle {
 	
 	int br, bg, bb;
 
-	public Particle(float x, float y, F1Var dx, F1Var dy, float mass, F1Var radius) {
+	public Particle(float x, float y, float dx, float dy, F1Var d2x, F1Var d2y, float mass, F1Var radius, int colR, int colG, int colB) {
 		this.x = x;
 		this.y = y;
+		
 		this.dx = dx;
 		this.dy = dy;
+		
+		this.d2x = d2x;
+		this.d2y = d2y;
+		
 		this.mass = mass;
 		this.radius = radius;
 		
-		br = bg = bb = 100;
+		br = colR;
+		bg = colG;
+		bb = colB;
 	}
 
 	public void update(float time){
-		x += dx.val(this.time);
-		y += dy.val(this.time);
+		x += dx * time;
+		y += dy * time;
+		
+		dx += d2x.val(this.time);
+		dy += d2y.val(this.time);
 		
 		this.time += time;
 	}
