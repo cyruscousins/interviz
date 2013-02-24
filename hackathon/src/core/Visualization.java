@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
+
+import com.echonest.api.v4.Segment;
+import com.echonest.api.v4.TrackAnalysis;
 
 import math.F2Var;
 import math.Polynomial;
@@ -24,31 +28,60 @@ public class Visualization {
 	}
 	
 	float time;
-	float emitterTheta;
+	float emitterTheta, emitterR;
 	
 	Random rand = new Random();
 	public void update(float dt){
 		this.time += dt;
 		
-		float tempoNow = 120;
+
+		float tempoNow;
+		int sourceX, sourceY;
 		
-		emitterTheta += (float)(dt * tempoNow / 60 * (2 * Math.PI) * .125f);
+		int colR, colG, colB;
 		
-		float rad = 64;
+		if(segments == null){
+			
+			tempoNow = 120;
 		
-		int sourceX = (int)(frame.width / 2 + (Math.cos(emitterTheta) * rad));
-		int sourceY = (int)(frame.height / 2 + (Math.sin(emitterTheta) * rad));
+			emitterTheta += (float)(dt * tempoNow / 60 * (2 * Math.PI) * .125f);
+			
+			emitterR = 64;
+			
+			float colSpeed = .5f;
+			colR = (int)(100 + 50 * Math.sin(time * colSpeed));
+			colG = (int)(100 + 50 * Math.cos(time * colSpeed));
+			colB = (int)(100 - 50 * Math.sin(time * colSpeed));
+
+		}
+		else{
+			Segment seg = segments.get(currentSegmentIndex);
+			
+			while(time - segT0 > seg.getDuration()){
+				segT0 += seg.getDuration();
+				currentSegmentIndex++;
+				if(currentSegmentIndex >= segments.size()){
+					System.out.println("SONG FINISHED!");
+				}
+				else seg = segments.get(currentSegmentIndex);
+			}
+			
+			emitterTheta += dt * seg.getLoudnessMax();
+			emitterR = (float)(32 * seg.getLoudnessMax());
+
+			colR = (int)(seg.getConfidence() * 255);
+			colG = (int)(seg.getLoudnessMax() * 255);
+			colB = (int)(seg.getLoudnessMaxTime() * 255);
+		}
 		
-		float colSpeed = .5f;
-		int colR = (int)(100 + 50 * Math.sin(time * colSpeed));
-		int colG = (int)(100 + 50 * Math.cos(time * colSpeed));
-		int colB = (int)(100 - 50 * Math.sin(time * colSpeed));
+		sourceX = (int)(frame.width / 2 + (Math.cos(emitterTheta) * emitterR));
+		sourceY = (int)(frame.height / 2 + (Math.sin(emitterTheta) * emitterR));
 		
 		for(int i = 0; i < 4; i++){
 			float vel = (float)(50 * Math.random());
 			float theta = (float)(Math.random() * Math.PI * 2);
 			
-			float grav = 80f;
+			float grav = 100f;
 //			float gravDir = (float)(Math.random() * Math.PI * 2);
 
 			float gravDir = (float)(Math.PI * 1 / 2);
@@ -74,7 +107,9 @@ public class Visualization {
 		for(Particle p : particles){
 			
 			p.dx += noise.dydx(p.x, p.y) * dt;
-			p.dy += (noise.dydz(p.x, p.y) - (p.y / frame.height) * (p.y / frame.height) * 128) * dt;
+			p.dy += (noise.dydz(p.x, p.y)) * dt;
+			
+			p.dy -= ((p.y / frame.height) * (p.y / frame.height) * 128) * dt;
 			
 			p.update(dt);
 			if(p.rad < 0) trash.add(p);
@@ -83,6 +118,15 @@ public class Visualization {
 		for(Particle p : trash){
 			particles.remove(p);
 		}
+	}
+	
+	List<Segment> segments;
+	int currentSegmentIndex;
+	float segT0;
+	public void setTrackAnalysis(TrackAnalysis analysis){
+		segments = analysis.getSegments();
+		currentSegmentIndex = 0;
+		segT0 = time;
 	}
 	
 	public void render(){
