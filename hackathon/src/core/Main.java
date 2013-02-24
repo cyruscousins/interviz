@@ -53,7 +53,6 @@ public class Main {
 		File[] songs = fc.getSelectedFiles();
 		Mp3Player.playSound(songs[0]);
 		Track track = null;
-		/*
 		if(songs.length > 0){
 			track = retrieveTrack(songs[0]);
 			try{
@@ -74,6 +73,5 @@ public class Main {
 			}
 			vis.render();
 		}
-		*/
 	}
 }
