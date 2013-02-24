@@ -61,7 +61,7 @@ public class Accentuator extends Visualization{
 				on = true;
 			}
 			//emit
-			float rawEmit = dist * 100 * dt * emitFrac;
+			float rawEmit = dist * 40 * dt * emitFrac;
 			int emissions = (int)rawEmit + (parent.rand.nextFloat() < (rawEmit - (int)rawEmit) ? 1 : 0);
 			for(int i = 0; i < emissions; i++){
 				float tTheta = (float)(parent.rand.nextFloat() * Math.PI * 2);

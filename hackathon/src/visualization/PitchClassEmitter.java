@@ -8,7 +8,7 @@ import com.echonest.api.v4.Segment;
 import math.Polynomial;
 
 public class PitchClassEmitter extends Visualization{
-	boolean bothSides;
+	boolean bothSides = true;
 	
 	
 	Random rand;
@@ -28,12 +28,7 @@ public class PitchClassEmitter extends Visualization{
 			if(pitches[i] * pitches[i] > rand.nextDouble() + .25f){
 				
 				float x = 32;
-				float y = 40 * (1 + i) + time * 12;
-				
-//				y *= rand.nextInt(2) + 1;
-				
-				y = (int)y % parent.frame.height;
-				
+				float y = (40 * (1 + i) + time * 12) % parent.frame.height;
 				
 				float dx = (float)(pitches[i]) * 50;
 				float dy = -rand.nextFloat() * 5f;
@@ -41,7 +36,7 @@ public class PitchClassEmitter extends Visualization{
 				float d2x = rand.nextFloat();
 				float d2y = 20; //GRAV
 
-				Polynomial radius = new Polynomial(new float[]{(float)pitches[i] + 2, .3f, -.225f, .1f, -.075f});
+				Polynomial radius = new Polynomial(new float[]{(float)pitches[i] + 2, .3f + (float)pitches[i] * .5f, -.35f * rand.nextFloat() * .25f, .1f, -.075f});
 				
 				float MASS = 3;
 				

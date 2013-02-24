@@ -28,7 +28,9 @@ public abstract class Visualization {
 			p.dy -= ((p.y / parent.frame.height) * (p.y / parent.frame.height) * 128) * dt;
 			
 			if(p.update(dt)){ //if dead
-				particles.set(i--, particles.remove(--len));
+				len--;
+				particles.set(i, particles.remove(len));
+				i--;
 			}
 		}
 	}

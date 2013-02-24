@@ -42,16 +42,16 @@ public class Particle {
 	}
 
 	//returns true on death.
-	public boolean update(float time){
-		x += dx * time;
-		y += dy * time;
+	public boolean update(float dt){
+		x += dx * dt;
+		y += dy * dt;
 		
-		dx += d2x * time;
-		dy += d2y * time;
+		dx += d2x * dt;
+		dy += d2y * dt;
 		
-		this.time += time;
+		this.time += dt;
 		
-		rad = radius.val(time);
+		rad = radius.val(this.time);
 		
 		return rad < 0;
 	}
