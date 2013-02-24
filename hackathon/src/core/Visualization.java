@@ -81,7 +81,7 @@ public class Visualization {
 			tempoNow = 120; //TODO
 			
 			emitterTheta += dt * tempoNow / 60;
-			emitterR = (float)(dt * 32 * relativeLoudness);
+			emitterR = (float)(32 * relativeLoudness);
 
 			double[] timbres = seg.getTimbre(); //12 values, centered around 0
 			
@@ -109,7 +109,7 @@ public class Visualization {
 					float d2x = rand.nextFloat();
 					float d2y = 4; //GRAV
 
-					Polynomial radius = new Polynomial(new float[]{2, .3f, -.2f, .1f, -.05f});
+					Polynomial radius = new Polynomial(new float[]{2, .3f, -.225f, .1f, -.075f});
 					
 					float MASS = 3;
 					
