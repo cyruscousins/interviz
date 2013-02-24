@@ -57,23 +57,15 @@ public class Main {
 		}
 
 		songPlayer.playSound();
-		long t0 = songPlayer.getMillisecondsTime();
+		long t0 = 0;
+		long t1 = 0;
 		while(songPlayer.isDonePlaying()) {
-			final float secondsPerTick = .02f;
-			vis.update(secondsPerTick);
-			
-			long t1 = songPlayer.getMillisecondsTime();
-			
-			if(t1 - t0 < secondsPerTick * 1000){
-				try{
-					Thread.sleep((int)(secondsPerTick * 1000 - (t1 - t0)));
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-			}
-			
 			t0 = songPlayer.getMillisecondsTime();
+			System.out.println(t0-t1);
+			vis.update((t0 - t1)/1000.0f);
+			
+			t1 = songPlayer.getMillisecondsTime();
+			
 			vis.render();
 		}
 		System.out.println("I'm done");
