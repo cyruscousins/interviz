@@ -45,8 +45,8 @@ public abstract class Visualization {
 			}
 			else
 			{
-				p.dx += parent.noise.dydx(p.x, p.y) * 64 * dt / p.mass;
-				p.dy += parent.noise.dydz(p.x, p.y) * 64 * dt / p.mass;
+//				p.dx += parent.noise.dydx(p.x, p.y) * 64 * dt / p.mass;
+//				p.dy += parent.noise.dydz(p.x, p.y) * 64 * dt / p.mass;
 				
 				//Push away from bottom edge
 				p.dy -= ((p.y / parent.frame.height) * (p.y / parent.frame.height) * 32) * dt;

@@ -63,7 +63,8 @@ public class Main {
 		songPlayer.playSound();
 		long t0 = 0;
 		long t1 = 0;
-		while(!songPlayer.isDonePlaying()) {
+		while(!vis.isFinished()){
+//		while(!songPlayer.isDonePlaying()) {
 			t0 = songPlayer.getMicrosecondsTime();
 			vis.update((t0 - t1)/1000000.0f);
 			
@@ -72,5 +73,15 @@ public class Main {
 			vis.render();
 		}
 		System.out.println("I'm done");
+		for(int i = 0; i < 1000; i++){
+			vis.update(.01f);
+			try{
+				Thread.sleep(10);
+			}
+			catch (Exception e){
+				e.printStackTrace();
+			}
+			vis.render();
+		}
 	}
 }

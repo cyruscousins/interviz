@@ -42,6 +42,7 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 		visualizations.add(new PitchClassEmitter(this));
 		visualizations.add(new Accentuator(this));
 		visualizations.add(new CenterVisualizationPitchClass(this));
+		visualizations.add(new RingVisualizer(this));
 //		visualizations.add(new AcceloVisualizer(this));
 		visualizations.add(new BeatPulser(this));
 		visualizations.add(new BeatPulser(this));
@@ -65,6 +66,10 @@ public class VisualizationManager implements MouseMotionListener, MouseListener{
 	Random rand = new Random();
 
 	boolean newBeat = false;
+	
+	public boolean isFinished(){
+		return currentSegmentIndex >= segments.size() || currentBeatIndex >= beats.size();
+	}
 	
 	public void update(float dt){
 		if(currentSegmentIndex >= segments.size() || currentBeatIndex >= beats.size()){

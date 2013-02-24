@@ -24,9 +24,16 @@ public class PitchClassEmitter extends Visualization{
 		Segment seg = parent.segments.get(parent.currentSegmentIndex);
 		double[] pitches = seg.getPitches();
 		
+		float rawEmitAmt = parent.relativeLoudness * parent.relativeLoudness * amt * dt * 90;
+
 		for(int i = 0; i < pitches.length; i++){
-			if(pitches[i] * pitches[i] > rand.nextDouble() + .25f){
-				
+			
+			float pitchEmitAmt = rawEmitAmt * (float)(pitches[i] * pitches[i]);
+			int emitAmt = (int)(pitchEmitAmt) + (parent.rand.nextFloat() < (pitchEmitAmt - (int) pitchEmitAmt) ? 1 : 0);
+			
+			for(int j = 0; j < emitAmt; j++){
+
+
 				float x = 32;
 				float y = (40 * (1 + i) + time * 50) % parent.frame.height;
 				

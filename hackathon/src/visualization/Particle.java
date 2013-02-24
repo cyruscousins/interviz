@@ -70,7 +70,7 @@ public class Particle {
 		bg = colG;
 		bb = colB;
 		
-		ba = Math.max(0, Math.min(255, lastType % 110 * 2 + 50 - clearness));
+		ba = Math.max(0, Math.min(255, lastType % 25 * 9 + 50 - clearness));
 		
 		this.strangeness = strangeness;
 		

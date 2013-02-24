@@ -21,7 +21,8 @@ public class RingVisualizer extends Visualization{
 		
 		if(parent.relativeLoudness < 0) emitAmt = 0;
 		
-		radius = (float)(Math.pow(.75f, dt) * radius + 100 * (1 + parent.relativeLoudness));
+		float scl = (float)Math.pow(.75f, dt);
+		radius = (scl * radius + (1 - scl) * 100 * (1 + parent.relativeLoudness));
 		
 		if(parent.newBeat){
 			radius += 50;
@@ -42,11 +43,11 @@ public class RingVisualizer extends Visualization{
 			float x = x0 + (float)(cosTheta * radius);
 			float y = y0 + (float)(sinTheta * radius);
 			
-			float dx = (float)(vel * (sinTheta + cosTheta));
-			float dy = (float)(vel * (cosTheta - sinTheta));
+			float dx = (float)(vel * -sinTheta);
+			float dy = (float)(vel * cosTheta);
 			
-			float d2x = -x * .5f - grav;
-			float d2y = -y * .5f;
+			float d2x = -cosTheta * radius * .5f * .25f + grav;
+			float d2y = -sinTheta * radius * .5f * .25f;
 			
 			Polynomial radius = new Polynomial(new float[]{1.5f, .35f + parent.rand.nextFloat() * .5f, -.225f});
 			
