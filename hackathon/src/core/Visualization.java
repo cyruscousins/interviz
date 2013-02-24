@@ -33,6 +33,8 @@ public class Visualization {
 	float time;
 	float emitterTheta, emitterR;
 	
+	int emitCount;
+	
 	Random rand = new Random();
 	public void update(float dt){
 		this.time += dt;
@@ -42,6 +44,8 @@ public class Visualization {
 		int sourceX, sourceY;
 		
 		int colR, colG, colB;
+		
+		int newSegCount;
 		
 		if(segments == null){
 			
@@ -56,6 +60,7 @@ public class Visualization {
 			colG = (int)(100 + 50 * Math.cos(time * colSpeed));
 			colB = (int)(100 - 50 * Math.sin(time * colSpeed));
 
+			newSegCount = 4;
 		}
 		else{
 			Segment seg = segments.get(currentSegmentIndex);
@@ -69,8 +74,14 @@ public class Visualization {
 				else seg = segments.get(currentSegmentIndex);
 			}
 			
-			emitterTheta += dt * seg.getLoudnessMax() / tLoudness;
-			emitterR = (float)(32 * seg.getLoudnessMax());
+			float relativeLoudness = (float)(seg.getLoudnessMax() / tLoudness);
+			
+			if(rand.nextFloat() > .75f) System.out.println("RLOUDNESS: " + relativeLoudness);
+			
+			tempoNow = 120; //TODO
+			
+			emitterTheta += dt * tempoNow / 60;
+			emitterR = (float)(dt * 32 * relativeLoudness);
 
 			double[] timbres = seg.getTimbre(); //12 values, centered around 0
 			
@@ -78,13 +89,19 @@ public class Visualization {
 			colG = (int)((timbres[1] + 1) * 127);
 			colB = (int)((timbres[2] + 1) * 127);
 			
+			//How many particles does the emitter emit?
+			float countTemp = relativeLoudness * dt * 100;
+			newSegCount = (int) countTemp + (rand.nextFloat() < (countTemp - (int) countTemp) ? 1 : 0);
+
 			double[] pitches = seg.getPitches();
 			
 			for(int i = 0; i < pitches.length; i++){
 				if(pitches[i] > rand.nextDouble()){
 					
 					float x = 32;
-					float y = 32 * (2 + i);
+					float y = 40 * (2 + i);
+					
+					y *= rand.nextInt(3) + 1;
 					
 					float dx = (float)pitches[i] - 1;
 					float dy = -rand.nextFloat() * .5f;
