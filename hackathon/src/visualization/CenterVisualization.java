@@ -3,6 +3,7 @@ package visualization;
 import math.Polynomial;
 
 public class CenterVisualization extends Visualization{
+	
 	public CenterVisualization(VisualizationManager parent){
 		super(parent);
 	}
@@ -47,21 +48,6 @@ public class CenterVisualization extends Visualization{
 		
 		//Update particles
 		
-		int len = particles.size();
-		for(int i = 0; i < len; i++){
-			Particle p = particles.get(i);
-
-//			p.dx += noise.dydx(p.x, p.y) * dt;
-//			p.dy += (noise.dydz(p.x, p.y)) * dt;
-			
-			//Push away from bottom edge
-			p.dy -= ((p.y / parent.frame.height) * (p.y / parent.frame.height) * 128) * dt;
-			
-			if(p.update(dt)){ //if dead
-				particles.set(i--, particles.remove(--len));
-			}
-		}
-		
-		
+		updateParticles(dt);
 	}
 }

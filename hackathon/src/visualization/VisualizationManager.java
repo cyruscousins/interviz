@@ -33,6 +33,7 @@ public class VisualizationManager {
 		
 		visualizations.add(new CenterVisualization(this));
 		visualizations.add(new PitchClassEmitter(this));
+		visualizations.add(new Accentuator(this));
 		
 	}
 	
@@ -87,8 +88,8 @@ public class VisualizationManager {
 		//How many particles does the center emitter emit?
 		float countTemp = relativeLoudness * relativeLoudness * dt * 20;
 		
-		for(Visualization vis : visualizations){
-			vis.update(dt, 1);
+		for(int i = 0; i < visualizations.size(); i++){
+			visualizations.get(i).update(dt, (float)(Math.sin(i + time) * .25f + .75f));
 		}
 	}
 	
